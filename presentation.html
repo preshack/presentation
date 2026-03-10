@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GB Rhinos – Communication Training</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;1,9..144,300;1,9..144,700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-snap-type:y mandatory; scroll-behavior:smooth; }
+
+:root {
+  --rhino:   #c9a0a0;
+  --deep:    #8b5e5e;
+  --blush:   #f0e4e4;
+  --fog:     #f7f2f2;
+  --stone:   #6b5c5c;
+  --ink:     #1e1616;
+  --cream:   #fdf9f8;
+  --sand:    #e8dbd8;
+  --warm:    #d4b8b0;
+}
+
+body { font-family:'DM Sans', sans-serif; background:var(--cream); overflow-x:hidden; }
+
+/* PROGRESS BAR */
+#prog {
+  position:fixed; top:0; left:0; height:4px; z-index:999;
+  background:linear-gradient(90deg, var(--rhino), var(--deep));
+  box-shadow:0 0 14px rgba(201,160,160,.7);
+  transition:width .3s;
+}
+
+/* NAV DOTS */
+#nav {
+  position:fixed; right:24px; top:50%; transform:translateY(-50%);
+  z-index:100; display:flex; flex-direction:column; gap:12px;
+}
+.nd {
+  width:10px; height:10px; border-radius:50%;
+  border:2px solid var(--warm); background:transparent;
+  cursor:pointer; transition:all .3s;
+}
+.nd.on { background:var(--rhino); border-color:var(--rhino); box-shadow:0 0 10px rgba(201,160,160,.6); }
+
+/* SLIDES */
+.slide {
+  min-height:100vh;
+  scroll-snap-align:start;
+  display:flex; align-items:center; justify-content:center;
+  padding:80px 80px 60px;
+  position:relative; overflow:hidden;
+  opacity:0; transform:translateY(28px);
+  transition:opacity .8s ease, transform .8s ease;
+}
+.slide.on { opacity:1; transform:translateY(0); }
+
+/* ════════════════
+   SLIDE 1: WELCOME
+════════════════ */
+#s1 {
+  background: radial-gradient(ellipse at 70% 30%, #3a2020 0%, #1e1616 60%, #120e0e 100%);
+  flex-direction:column;
+}
+.rhino-badge {
+  display:inline-flex; align-items:center; gap:10px;
+  border:1px solid rgba(201,160,160,.3);
+  padding:8px 24px; border-radius:40px; margin-bottom:36px;
+}
+.rhino-badge span {
+  font-size:.78rem; letter-spacing:.3em; text-transform:uppercase;
+  color:rgba(201,160,160,.7); font-weight:300;
+}
+.rhino-icon { font-size:1.4rem; }
+.welcome-title {
+  font-family:'Bebas Neue'; font-size:clamp(5rem,14vw,13rem);
+  line-height:.9; text-align:center; color:#fff; letter-spacing:.02em;
+}
+.welcome-title .highlight {
+  display:block; color:var(--rhino);
+  font-size:clamp(6rem,16vw,15rem);
+}
+.welcome-sub {
+  margin-top:32px; font-size:1.1rem; font-weight:300;
+  color:rgba(255,255,255,.45); letter-spacing:.14em;
+  text-transform:uppercase; text-align:center;
+}
+.member-row {
+  display:flex; flex-wrap:wrap; gap:10px; justify-content:center;
+  margin-top:32px; max-width:680px;
+}
+.m-chip {
+  padding:7px 20px; border-radius:30px;
+  background:rgba(201,160,160,.1); border:1px solid rgba(201,160,160,.25);
+  color:rgba(255,255,255,.7); font-size:.88rem; font-weight:300;
+  letter-spacing:.06em;
+}
+.bg-rhino-text {
+  position:absolute; font-family:'Bebas Neue';
+  font-size:40vw; color:rgba(255,255,255,.02);
+  pointer-events:none; line-height:1; top:50%; left:50%;
+  transform:translate(-50%,-50%); white-space:nowrap; user-select:none;
+}
+
+/* ════════════════
+   SLIDE 2: WHAT IS THIS ABOUT
+════════════════ */
+#s2 { background:var(--fog); }
+.about-wrap { max-width:1000px; width:100%; display:grid; grid-template-columns:1.2fr 1fr; gap:64px; align-items:center; }
+.about-left {}
+.slide-tag {
+  font-size:.72rem; letter-spacing:.3em; text-transform:uppercase;
+  color:var(--rhino); font-weight:400; margin-bottom:16px; display:block;
+}
+.section-title {
+  font-family:'Fraunces'; font-size:clamp(2.4rem,5vw,4rem);
+  font-weight:700; line-height:1.1; color:var(--ink);
+}
+.section-title i { color:var(--deep); font-style:italic; }
+.body-text {
+  font-size:1.05rem; line-height:1.8; color:var(--stone);
+  font-weight:300; margin-top:20px;
+}
+.stat-row { display:flex; gap:32px; margin-top:36px; }
+.stat { text-align:center; }
+.stat-num {
+  font-family:'Fraunces'; font-size:3.5rem; font-weight:700;
+  color:var(--rhino); line-height:1;
+}
+.stat-lbl {
+  font-size:.78rem; letter-spacing:.12em; text-transform:uppercase;
+  color:var(--stone); margin-top:6px; font-weight:400;
+}
+.about-right {}
+.goal-list { list-style:none; margin-top:0; }
+.goal-item {
+  display:flex; gap:18px; align-items:flex-start;
+  padding:20px 0; border-bottom:1px solid var(--sand);
+}
+.goal-item:first-child { padding-top:0; }
+.goal-item:last-child { border-bottom:none; }
+.goal-num {
+  font-family:'Fraunces'; font-size:2rem; color:var(--sand);
+  font-weight:700; line-height:1; min-width:36px;
+}
+.goal-text strong { display:block; font-size:1rem; color:var(--ink); margin-bottom:4px; }
+.goal-text p { font-size:.9rem; color:var(--stone); line-height:1.6; font-weight:300; }
+
+/* ════════════════
+   SLIDE 3: BAD MEETING (VIDEO PLACEHOLDER)
+════════════════ */
+#s3 { background: linear-gradient(145deg, #2a1e1e, #1e1414); }
+.video-slide-wrap { max-width:1000px; width:100%; }
+.vs-header { margin-bottom:32px; }
+.vs-tag {
+  display:inline-block; font-size:.72rem; letter-spacing:.3em;
+  text-transform:uppercase; padding:6px 20px; border-radius:30px;
+  margin-bottom:20px; font-weight:400;
+}
+.vs-bad { background:rgba(200,80,80,.2); color:#ffb0b0; border:1px solid rgba(220,80,80,.3); }
+.vs-good { background:rgba(80,200,120,.15); color:#b0ffca; border:1px solid rgba(80,200,120,.25); }
+.vs-title {
+  font-family:'Fraunces'; font-size:clamp(2.2rem,5vw,4rem);
+  font-weight:700; color:#fff; line-height:1.1;
+}
+.vs-title i { font-style:italic; color:#ffb0b0; }
+.vs-good-title i { color:#b0ffca; }
+.vs-layout { display:grid; grid-template-columns:1fr 1fr; gap:28px; align-items:start; margin-top:8px; }
+.video-box {
+  border-radius:18px; overflow:hidden; aspect-ratio:16/9;
+  background:#0e0a0a; display:flex; flex-direction:column;
+  align-items:center; justify-content:center; gap:14px;
+  border:2px solid rgba(255,255,255,.08);
+  box-shadow:0 20px 60px rgba(0,0,0,.4);
+  cursor:pointer; transition:border-color .3s, box-shadow .3s;
+}
+.video-box:hover { border-color:rgba(201,160,160,.4); box-shadow:0 24px 70px rgba(0,0,0,.5); }
+.play-circle {
+  width:64px; height:64px; border-radius:50%;
+  border:2px solid rgba(255,255,255,.3);
+  display:flex; align-items:center; justify-content:center;
+  transition:background .3s, border-color .3s;
+}
+.video-box:hover .play-circle { background:var(--rhino); border-color:var(--rhino); }
+.play-tri { width:0;height:0; border-top:12px solid transparent; border-bottom:12px solid transparent; border-left:20px solid rgba(255,255,255,.8); margin-left:4px; }
+.video-box:hover .play-tri { border-left-color:#fff; }
+.vid-label { font-size:.85rem; color:rgba(255,255,255,.4); letter-spacing:.1em; text-transform:uppercase; font-weight:300; }
+.vs-points { list-style:none; }
+.vs-point {
+  display:flex; gap:14px; align-items:flex-start;
+  padding:14px 0; border-bottom:1px solid rgba(255,255,255,.07);
+  font-size:.98rem; color:rgba(255,255,255,.65); font-weight:300; line-height:1.6;
+}
+.vs-point:last-child { border:none; }
+.vsp-dot { width:8px; height:8px; min-width:8px; border-radius:50%; margin-top:8px; }
+.dot-bad { background:#ff8080; }
+.dot-good { background:#80ffaa; }
+
+/* ════════════════
+   SKILL SLIDES
+════════════════ */
+.skill-slide-wrap { max-width:980px; width:100%; }
+.skill-header { display:flex; align-items:flex-end; justify-content:space-between; margin-bottom:40px; flex-wrap:wrap; gap:16px; }
+.skill-num-big {
+  font-family:'Bebas Neue'; font-size:8rem; color:var(--sand);
+  line-height:1; user-select:none;
+}
+.skill-title-block {}
+.skill-title {
+  font-family:'Fraunces'; font-size:clamp(2.2rem,5vw,4rem);
+  font-weight:700; line-height:1.05;
+}
+.skill-title i { font-style:italic; }
+.skill-subtitle { font-size:1rem; font-weight:300; margin-top:8px; }
+
+/* light skill slides */
+.sk-light { background: var(--cream); }
+.sk-light .skill-title { color:var(--ink); }
+.sk-light .skill-title i { color:var(--deep); }
+.sk-light .skill-subtitle { color:var(--stone); }
+
+/* dark skill slides */
+.sk-dark { background: linear-gradient(150deg, #2e1e1e, #1e1414); }
+.sk-dark .skill-num-big { color:rgba(255,255,255,.06); }
+.sk-dark .skill-title { color:#fff; }
+.sk-dark .skill-title i { color:var(--rhino); }
+.sk-dark .skill-subtitle { color:rgba(255,255,255,.5); }
+
+/* mid skill slides */
+.sk-mid { background: linear-gradient(150deg, #f5ecea, #ede3e0); }
+.sk-mid .skill-title { color:var(--ink); }
+.sk-mid .skill-title i { color:var(--deep); }
+.sk-mid .skill-subtitle { color:var(--stone); }
+
+.skill-cards { display:grid; grid-template-columns:repeat(3, 1fr); gap:20px; }
+.sk-card {
+  border-radius:16px; padding:28px 24px;
+  position:relative; overflow:hidden;
+  transition:transform .3s, box-shadow .3s;
+}
+.sk-card:hover { transform:translateY(-6px); }
+.sk-light .sk-card, .sk-mid .sk-card {
+  background:#fff; border:1px solid var(--sand);
+  box-shadow:0 4px 24px rgba(139,94,94,.1);
+}
+.sk-light .sk-card:hover, .sk-mid .sk-card:hover {
+  box-shadow:0 16px 48px rgba(139,94,94,.18);
+}
+.sk-dark .sk-card {
+  background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.1);
+}
+.sk-dark .sk-card:hover { background:rgba(255,255,255,.09); }
+
+.sk-card::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:3px;
+}
+.sk-light .sk-card::before, .sk-mid .sk-card::before {
+  background:linear-gradient(90deg, var(--rhino), var(--deep));
+}
+.sk-dark .sk-card::before {
+  background:linear-gradient(90deg, rgba(201,160,160,.6), rgba(139,94,94,.4));
+}
+
+.card-icon-label {
+  font-size:.7rem; letter-spacing:.2em; text-transform:uppercase;
+  font-weight:500; margin-bottom:12px; display:flex; align-items:center; gap:8px;
+}
+.sk-light .card-icon-label.wrong, .sk-mid .card-icon-label.wrong { color:#cc6666; }
+.sk-light .card-icon-label.fix, .sk-mid .card-icon-label.fix { color:var(--deep); }
+.sk-light .card-icon-label.why, .sk-mid .card-icon-label.why { color:var(--stone); }
+.sk-dark .card-icon-label.wrong { color:#ff9999; }
+.sk-dark .card-icon-label.fix { color:var(--rhino); }
+.sk-dark .card-icon-label.why { color:rgba(255,255,255,.5); }
+
+.icon-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+.dot-r { background:#cc6666; }
+.dot-p { background:var(--rhino); }
+.dot-g { background:#8eaa88; }
+
+.sk-card h3 {
+  font-size:1.05rem; font-weight:500; margin-bottom:10px; line-height:1.2;
+}
+.sk-light .sk-card h3, .sk-mid .sk-card h3 { color:var(--ink); }
+.sk-dark .sk-card h3 { color:#fff; }
+
+.sk-card p {
+  font-size:.92rem; line-height:1.72; font-weight:300;
+}
+.sk-light .sk-card p, .sk-mid .sk-card p { color:var(--stone); }
+.sk-dark .sk-card p { color:rgba(255,255,255,.55); }
+
+/* ════════════════
+   SLIDE: GOOD MEETING VIDEO
+════════════════ */
+#s9 { background: linear-gradient(145deg, #1a2620, #141e18); }
+
+/* ════════════════
+   SLIDE: CLOSING
+════════════════ */
+#s11 {
+  background: radial-gradient(ellipse at 30% 70%, #3a2020 0%, #1e1616 60%);
+  flex-direction:column; text-align:center;
+}
+.closing-title {
+  font-family:'Bebas Neue'; font-size:clamp(4rem,12vw,11rem);
+  color:#ffffff; line-height:.9; letter-spacing:.03em;
+  text-shadow: 0 2px 30px rgba(201,160,160,.3);
+}
+.closing-title span { color:var(--rhino); display:block; }
+.closing-rule { width:80px; height:2px; background:var(--rhino); margin:32px auto; box-shadow:0 0 12px rgba(201,160,160,.5); }
+.recap-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:16px; margin-top:36px; max-width:800px; }
+.recap-card {
+  background:rgba(255,255,255,.09); border:1px solid rgba(201,160,160,.35);
+  border-radius:14px; padding:18px 14px; text-align:center;
+  transition:background .3s, transform .3s;
+}
+.recap-card:hover { background:rgba(201,160,160,.18); transform:translateY(-3px); }
+.rc-num { font-family:'Fraunces'; font-size:2.2rem; color:var(--rhino); font-weight:700; line-height:1; }
+.rc-label { font-size:.75rem; color:rgba(255,255,255,.75); text-transform:uppercase; letter-spacing:.1em; margin-top:8px; font-weight:400; }
+.closing-sub { font-size:1rem; color:rgba(255,255,255,.65); letter-spacing:.16em; text-transform:uppercase; margin-top:28px; font-weight:300; }
+.team-row { display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-top:20px; }
+.t-chip {
+  padding:7px 18px; border-radius:24px;
+  background:rgba(201,160,160,.15); border:1px solid rgba(201,160,160,.4);
+  color:rgba(255,255,255,.85); font-size:.85rem; font-weight:300;
+  transition:background .2s;
+}
+.t-chip:hover { background:rgba(201,160,160,.3); }
+
+@media(max-width:720px){
+  .about-wrap, .vs-layout { grid-template-columns:1fr; }
+  .skill-cards { grid-template-columns:1fr; }
+  .recap-grid { grid-template-columns:repeat(3,1fr); }
+  .slide { padding:70px 24px 40px; }
+  #nav { right:10px; }
+}
+</style>
+</head>
+<body>
+
+<div id="prog"></div>
+<nav id="nav"></nav>
+
+<!-- ══════════ SLIDE 1: WELCOME ══════════ -->
+<section class="slide" id="s1">
+  <div class="bg-rhino-text">RH</div>
+  <div style="position:absolute;width:600px;height:600px;top:-200px;right:-200px;border-radius:50%;background:radial-gradient(circle,rgba(201,160,160,.08) 0%,transparent 70%);pointer-events:none;"></div>
+  <div style="z-index:1;display:flex;flex-direction:column;align-items:center;">
+
+    <!-- GB RHINOS CREATIVE LOGO -->
+    <div style="display:flex;align-items:center;gap:22px;margin-bottom:28px;background:rgba(201,160,160,.07);border:1px solid rgba(201,160,160,.2);padding:16px 28px;border-radius:20px;backdrop-filter:blur(8px);">
+      <svg width="80" height="80" viewBox="0 0 90 90" fill="none" xmlns="http://www.w3.org/2000/svg" style="filter:drop-shadow(0 0 16px rgba(201,160,160,.55))">
+        <path d="M45 4 L78 18 L78 52 Q78 72 45 86 Q12 72 12 52 L12 18 Z" fill="rgba(201,160,160,.1)" stroke="rgba(201,160,160,.45)" stroke-width="1.5"/>
+        <ellipse cx="46" cy="54" rx="18" ry="13" fill="rgba(201,160,160,.22)" stroke="rgba(201,160,160,.7)" stroke-width="1.2"/>
+        <ellipse cx="30" cy="48" rx="13" ry="11" fill="rgba(201,160,160,.28)" stroke="rgba(201,160,160,.85)" stroke-width="1.5"/>
+        <path d="M19 42 L13 28 L22 38" fill="#c9a0a0" stroke="#c9a0a0" stroke-width="1"/>
+        <path d="M23 40 L19 33 L25 38" fill="rgba(201,160,160,.75)" stroke="rgba(201,160,160,.9)" stroke-width=".8"/>
+        <circle cx="27" cy="45" r="2.5" fill="#c9a0a0"/>
+        <circle cx="27" cy="45" r="1.2" fill="#1e1616"/>
+        <path d="M33 39 Q38 33 42 37 Q39 41 35 42 Z" fill="rgba(201,160,160,.5)" stroke="rgba(201,160,160,.8)" stroke-width="1"/>
+        <rect x="34" y="65" width="5" height="12" rx="2" fill="rgba(201,160,160,.6)" stroke="rgba(201,160,160,.8)" stroke-width="1"/>
+        <rect x="41" y="65" width="5" height="12" rx="2" fill="rgba(201,160,160,.6)" stroke="rgba(201,160,160,.8)" stroke-width="1"/>
+        <rect x="50" y="64" width="5" height="11" rx="2" fill="rgba(201,160,160,.5)" stroke="rgba(201,160,160,.7)" stroke-width="1"/>
+        <rect x="57" y="64" width="5" height="11" rx="2" fill="rgba(201,160,160,.5)" stroke="rgba(201,160,160,.7)" stroke-width="1"/>
+        <path d="M64 52 Q72 48 70 42" fill="none" stroke="rgba(201,160,160,.7)" stroke-width="2" stroke-linecap="round"/>
+        <path d="M17 51 Q20 55 25 53" fill="none" stroke="rgba(201,160,160,.6)" stroke-width="1.2" stroke-linecap="round"/>
+      </svg>
+      <div style="display:flex;flex-direction:column;gap:3px;">
+        <div style="font-family:'DM Sans';font-weight:200;font-size:.62rem;letter-spacing:.36em;color:rgba(201,160,160,.55);text-transform:uppercase;">COMM 200 · Group Project 1</div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span style="font-family:'Bebas Neue';font-size:2.6rem;color:rgba(255,255,255,.92);letter-spacing:.1em;line-height:1;">GB</span>
+          <span style="width:2px;height:26px;background:var(--rhino);display:inline-block;opacity:.5;"></span>
+          <span style="font-family:'Bebas Neue';font-size:2.6rem;color:var(--rhino);letter-spacing:.1em;line-height:1;">RHINOS</span>
+        </div>
+        <div style="font-family:'DM Sans';font-weight:300;font-size:.62rem;letter-spacing:.22em;color:rgba(255,255,255,.28);text-transform:uppercase;">Small Group Communication Training</div>
+      </div>
+    </div>
+
+    <p class="welcome-sub" style="font-size:1.15rem;margin-bottom:24px;color:rgba(255,255,255,.4);">Communication Training Session</p>
+    <div class="member-row">
+      <span class="m-chip">Preshak</span>
+      <span class="m-chip">Hrishav</span>
+      <span class="m-chip">Saksham</span>
+      <span class="m-chip">Regan</span>
+      <span class="m-chip">Kaya</span>
+      <span class="m-chip">Elias</span>
+      <span class="m-chip">Landon</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ SLIDE 2: WHAT WE ARE TEACHING ══════════ -->
+<section class="slide" id="s2">
+  <div class="about-wrap">
+    <div class="about-left">
+      <span class="slide-tag">Why We Are Here</span>
+      <h2 class="section-title">Most Groups Fail<br><i>Before They Start</i></h2>
+      <p class="body-text">
+        Bad group meetings do not happen because people are bad at their jobs. They happen because nobody was ever taught <strong>how to communicate</strong> inside a group. People talk over each other, shut down, or disengage and the whole group suffers for it.
+      </p>
+      <p class="body-text" style="margin-top:12px;">
+        Today we are going to show you exactly what that looks like, break down the <strong>5 skills</strong> that fix it, and show you the same group doing it right.
+      </p>
+      <div class="stat-row">
+        <div class="stat">
+          <div class="stat-num">5</div>
+          <div class="stat-lbl">Core Skills</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num">2</div>
+          <div class="stat-lbl">Live Skits</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num">7</div>
+          <div class="stat-lbl">Members</div>
+        </div>
+      </div>
+    </div>
+    <div class="about-right">
+      <ul class="goal-list">
+        <li class="goal-item">
+          <span class="goal-num">01</span>
+          <div class="goal-text">
+            <strong>Watch the Bad Skit</strong>
+            <p>See all five broken communication skills play out in one real scenario and spot exactly what is going wrong.</p>
+          </div>
+        </li>
+        <li class="goal-item">
+          <span class="goal-num">02</span>
+          <div class="goal-text">
+            <strong>Learn the 5 Skills</strong>
+            <p>We break each skill down: what went wrong, how you train it, and why it actually matters for the group.</p>
+          </div>
+        </li>
+        <li class="goal-item">
+          <span class="goal-num">03</span>
+          <div class="goal-text">
+            <strong>Watch the Good Skit</strong>
+            <p>The same scenario, the same people, completely different outcome when the right skills are applied.</p>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ SLIDE 3: BAD SKIT VIDEO ══════════ -->
+<section class="slide" id="s3">
+  <div class="video-slide-wrap">
+    <div class="vs-header">
+      <span class="vs-tag vs-bad">Before Training</span>
+      <h2 class="vs-title">What <i>NOT</i> to Do</h2>
+    </div>
+    <div class="vs-layout">
+      <div class="video-box" onclick="this.innerHTML='<p style=\'color:rgba(255,255,255,.4);font-family:DM Sans;padding:20px;text-align:center\'>Paste your video embed here</p>'">
+        <div class="play-circle"><div class="play-tri"></div></div>
+        <span class="vid-label">Bad Skit Video</span>
+      </div>
+      <ul class="vs-points">
+        <li class="vs-point"><span class="vsp-dot dot-bad"></span><span>Someone is clearly not paying attention. They keep missing what was just said and have to be repeated to.</span></li>
+        <li class="vs-point"><span class="vsp-dot dot-bad"></span><span>One person does all the talking. Nobody else gets a real chance to contribute their ideas.</span></li>
+        <li class="vs-point"><span class="vsp-dot dot-bad"></span><span>A disagreement turns into a personal argument. It gets emotional and nobody steps in to help.</span></li>
+        <li class="vs-point"><span class="vsp-dot dot-bad"></span><span>Someone shows up late and just shrugs it off. The group loses time and momentum.</span></li>
+        <li class="vs-point"><span class="vsp-dot dot-bad"></span><span>One member refuses to budge on their idea even when the rest of the group disagrees.</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ SLIDE 4: SKILL 1 – ACTIVE LISTENING ══════════ -->
+<section class="slide sk-light" id="s4">
+  <div class="skill-slide-wrap">
+    <div class="skill-header">
+      <div class="skill-num-big">01</div>
+      <div class="skill-title-block">
+        <h2 class="skill-title">Active <i>Listening</i></h2>
+        <p class="skill-subtitle">Are you actually hearing what people are saying?</p>
+      </div>
+    </div>
+    <div class="skill-cards">
+      <div class="sk-card">
+        <div class="card-icon-label wrong"><span class="icon-dot dot-r"></span>What Goes Wrong</div>
+        <h3>Zoning Out</h3>
+        <p>When someone is not truly listening, they miss key information, ask questions that were already answered, and make other members feel like their words do not matter.</p>
+      </div>
+      <div class="sk-card">
+        <div class="card-icon-label fix"><span class="icon-dot dot-p"></span>How to Build It</div>
+        <h3>Be Present on Purpose</h3>
+        <p>Put the phone down. Make eye contact. When someone finishes talking, pause and repeat back what you heard in your own words before you respond. This alone changes everything.</p>
+      </div>
+      <div class="sk-card">
+        <div class="card-icon-label why"><span class="icon-dot dot-g"></span>Why It Matters</div>
+        <h3>The Group Moves Faster</h3>
+        <p>Groups that listen well make decisions faster, have fewer misunderstandings, and create an environment where people actually want to speak up and share ideas.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ SLIDE 5: SKILL 2 – EMOTIONAL INTELLIGENCE ══════════ -->
+<section class="slide sk-dark" id="s5">
+  <div class="skill-slide-wrap">
+    <div class="skill-header">
+      <div class="skill-num-big">02</div>
+      <div class="skill-title-block">
+        <h2 class="skill-title">Emotional <i>Intelligence</i></h2>
+        <p class="skill-subtitle">Do you know how your energy affects the room?</p>
+      </div>
+    </div>
+    <div class="skill-cards">
+      <div class="sk-card">
+        <div class="card-icon-label wrong"><span class="icon-dot dot-r"></span>What Goes Wrong</div>
+        <h3>Only Your Opinion Counts</h3>
+        <p>When someone does not notice or care about the emotional temperature of the group, they bulldoze others and make people feel unheard. Quiet people go quieter. The group shrinks.</p>
+      </div>
+      <div class="sk-card">
+        <div class="card-icon-label fix"><span class="icon-dot dot-p"></span>How to Build It</div>
+        <h3>Pause Before You React</h3>
+        <p>Notice when you feel defensive or frustrated. Take a breath before responding. Look around the table and check in with how others are feeling, not just yourself. Ask before you assume.</p>
+      </div>
+      <div class="sk-card">
+        <div class="card-icon-label why"><span class="icon-dot dot-g"></span>Why It Matters</div>
+        <h3>People Stay in the Room</h3>
+        <p>Emotionally intelligent groups keep all their members engaged. When people feel safe, they contribute more. When they feel dismissed, they go silent and the group loses their best ideas.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ SLIDE 6: SKILL 3 – CONFLICT MANAGEMENT ══════════ -->
+<section class="slide sk-mid" id="s6">
+  <div class="skill-slide-wrap">
+    <div class="skill-header">
+      <div class="skill-num-big">03</div>
+      <div class="skill-title-block">
+        <h2 class="skill-title">Conflict <i>Management</i></h2>
+        <p class="skill-subtitle">Can you disagree without destroying the group?</p>
+      </div>
+    </div>
+    <div class="skill-cards">
+      <div class="sk-card">
+        <div class="card-icon-label wrong"><span class="icon-dot dot-r"></span>What Goes Wrong</div>
+        <h3>Blowing Up</h3>
+        <p>The moment someone takes a disagreement personally, the whole meeting derails. Voices go up, people get defensive and the focus shifts from solving the problem to winning the argument.</p>
+      </div>
+      <div class="sk-card">
+        <div class="card-icon-label fix"><span class="icon-dot dot-p"></span>How to Build It</div>
+        <h3>Slow the Conversation Down</h3>
+        <p>When tension rises, stop and breathe. Focus the conversation back on facts and shared goals. Separate the idea from the person. Ask questions instead of making accusations.</p>
+      </div>
+      <div class="sk-card">
+        <div class="card-icon-label why"><span class="icon-dot dot-g"></span>Why It Matters</div>
+        <h3>Conflict Can Be Productive</h3>
+        <p>Healthy disagreement leads to better decisions. Groups that can manage conflict instead of avoiding it or exploding through it are the ones that actually find good answers together.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ SLIDE 7: SKILL 4 – ADAPTABILITY ══════════ -->
+<section class="slide sk-light" id="s7">
+  <div class="skill-slide-wrap">
+    <div class="skill-header">
+      <div class="skill-num-big">04</div>
+      <div class="skill-title-block">
+        <h2 class="skill-title"><i>Adaptability</i></h2>
+        <p class="skill-subtitle">Can you change your mind when the evidence says you should?</p>
+      </div>
+    </div>
+    <div class="skill-cards">
+      <div class="sk-card">
+        <div class="card-icon-label wrong"><span class="icon-dot dot-r"></span>What Goes Wrong</div>
+        <h3>My Way or Nothing</h3>
+        <p>When someone locks in on one idea and refuses to consider anything else, the group gets stuck. Other members stop sharing because they already know their input will be ignored.</p>
+      </div>
+      <div class="sk-card">
+        <div class="card-icon-label fix"><span class="icon-dot dot-p"></span>How to Build It</div>
+        <h3>Stay Open, Stay Curious</h3>
+        <p>Before defending your position, actually listen to the other idea. Ask yourself if there is merit in what someone else is saying. Be willing to say "You are right, let us go with that."</p>
+      </div>
+      <div class="sk-card">
+        <div class="card-icon-label why"><span class="icon-dot dot-g"></span>Why It Matters</div>
+        <h3>Better Decisions Get Made</h3>
+        <p>Adaptable groups are not weak. They are smart. They pick the best idea in the room, not the loudest one. That is how teams actually reach the right outcome together.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ SLIDE 8: SKILL 5 – TIME MANAGEMENT ══════════ -->
+<section class="slide sk-dark" id="s8">
+  <div class="skill-slide-wrap">
+    <div class="skill-header">
+      <div class="skill-num-big">05</div>
+      <div class="skill-title-block">
+        <h2 class="skill-title">Time <i>Respect</i></h2>
+        <p class="skill-subtitle">Do you value the group's time as much as your own?</p>
+      </div>
+    </div>
+    <div class="skill-cards">
+      <div class="sk-card">
+        <div class="card-icon-label wrong"><span class="icon-dot dot-r"></span>What Goes Wrong</div>
+        <h3>Showing Up Late, Unprepared</h3>
+        <p>Arriving late forces everyone to repeat themselves. Coming unprepared wastes the group's working time. Both send the same message: your time matters more than theirs.</p>
+      </div>
+      <div class="sk-card">
+        <div class="card-icon-label fix"><span class="icon-dot dot-p"></span>How to Build It</div>
+        <h3>Plan Ahead, Communicate Early</h3>
+        <p>Know what the meeting is about before you walk in. If you are going to be late, tell the group in advance. Use a shared agenda so everyone is aligned on what needs to get done.</p>
+      </div>
+      <div class="sk-card">
+        <div class="card-icon-label why"><span class="icon-dot dot-g"></span>Why It Matters</div>
+        <h3>It Sets the Whole Tone</h3>
+        <p>How a meeting starts is how it ends. A group that respects each other's time from minute one runs tighter, more focused meetings and actually finishes what it sets out to do.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ SLIDE 9: GOOD SKIT VIDEO ══════════ -->
+<section class="slide" id="s9">
+  <div class="video-slide-wrap">
+    <div class="vs-header">
+      <span class="vs-tag vs-good">After Training</span>
+      <h2 class="vs-title vs-good-title">Same Group, Different <i>Energy</i></h2>
+    </div>
+    <div class="vs-layout">
+      <div class="video-box" style="border-color:rgba(80,200,120,.2);" onclick="this.innerHTML='<p style=\'color:rgba(255,255,255,.4);font-family:DM Sans;padding:20px;text-align:center\'>Paste your video embed here</p>'">
+        <div class="play-circle" style="border-color:rgba(80,200,120,.4)"><div class="play-tri"></div></div>
+        <span class="vid-label">Good Skit Video</span>
+      </div>
+      <ul class="vs-points">
+        <li class="vs-point"><span class="vsp-dot dot-good"></span><span>Everyone is present from the start. Eye contact is being made. People are nodding and engaged.</span></li>
+        <li class="vs-point"><span class="vsp-dot dot-good"></span><span>Every member gets a turn to speak. The facilitator actively invites quieter voices in.</span></li>
+        <li class="vs-point"><span class="vsp-dot dot-good"></span><span>A disagreement comes up, but instead of escalating it gets redirected back to the shared goal.</span></li>
+        <li class="vs-point"><span class="vsp-dot dot-good"></span><span>Everyone arrived on time and came prepared. The meeting starts and stays on track.</span></li>
+        <li class="vs-point"><span class="vsp-dot dot-good"></span><span>When a better idea surfaces, the group shifts to it. The best thinking wins, not the loudest voice.</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ SLIDE 10: CLOSING ══════════ -->
+<section class="slide" id="s10" style="background:radial-gradient(ellipse at 30% 70%, #3a2020 0%, #1e1616 60%);">
+  <div style="font-family:'Bebas Neue';font-size:35vw;color:rgba(255,255,255,.04);position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;user-select:none;line-height:1;">GB</div>
+  <div style="z-index:1;display:flex;flex-direction:column;align-items:center;">
+    <h2 class="closing-title">
+      Any
+      <span>Questions?</span>
+    </h2>
+    <div class="closing-rule"></div>
+    <div class="recap-grid">
+      <div class="recap-card">
+        <div class="rc-num">01</div>
+        <div class="rc-label">Active Listening</div>
+      </div>
+      <div class="recap-card">
+        <div class="rc-num">02</div>
+        <div class="rc-label">Emotional Intelligence</div>
+      </div>
+      <div class="recap-card">
+        <div class="rc-num">03</div>
+        <div class="rc-label">Conflict Management</div>
+      </div>
+      <div class="recap-card">
+        <div class="rc-num">04</div>
+        <div class="rc-label">Adaptability</div>
+      </div>
+      <div class="recap-card">
+        <div class="rc-num">05</div>
+        <div class="rc-label">Time Respect</div>
+      </div>
+    </div>
+    <p class="closing-sub">Presented by the GB Rhinos</p>
+    <div class="team-row">
+      <span class="t-chip">🦏 Preshak</span>
+      <span class="t-chip">🦏 Hrishav</span>
+      <span class="t-chip">🦏 Saksham</span>
+      <span class="t-chip">🦏 Regan</span>
+      <span class="t-chip">🦏 Kaya</span>
+      <span class="t-chip">🦏 Elias</span>
+      <span class="t-chip">🦏 Landon</span>
+    </div>
+  </div>
+</section>
+
+<script>
+const slides = document.querySelectorAll('.slide');
+const navEl  = document.getElementById('nav');
+const prog   = document.getElementById('prog');
+const total  = slides.length;
+
+slides.forEach((_,i)=>{
+  const d = document.createElement('button');
+  d.className='nd'; d.title=`Slide ${i+1}`;
+  d.addEventListener('click',()=>slides[i].scrollIntoView({behavior:'smooth'}));
+  navEl.appendChild(d);
+});
+const dots = navEl.querySelectorAll('.nd');
+
+const io = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.classList.add('on');
+      const i=[...slides].indexOf(e.target);
+      dots.forEach((d,j)=>d.classList.toggle('on',i===j));
+      prog.style.width=((i+1)/total*100)+'%';
+    }
+  });
+},{threshold:0.4});
+slides.forEach(s=>io.observe(s));
+
+document.addEventListener('keydown',e=>{
+  const cur=[...slides].findIndex(s=>s.classList.contains('on'));
+  if((e.key==='ArrowDown'||e.key==='ArrowRight')&&cur<total-1) slides[cur+1].scrollIntoView({behavior:'smooth'});
+  if((e.key==='ArrowUp'||e.key==='ArrowLeft')&&cur>0) slides[cur-1].scrollIntoView({behavior:'smooth'});
+});
+</script>
+</body>
+</html>
