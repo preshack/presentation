@@ -32,7 +32,9 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'DM Sans',sans-seri
 #bn{bottom:26px;left:50%;transform:translateX(22px);}
 .abtn svg{width:17px;height:17px;stroke:rgba(255,255,255,.7);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
 
-#kh{position:fixed;bottom:26px;left:50%;transform:translateX(-50%);z-index:200;font-size:.65rem;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.25);pointer-events:none;transition:opacity .5s;}
+#kh{position:fixed;bottom:26px;left:50%;transform:translateX(-50%);z-index:200;font-size:.65rem;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.25);pointer-events:none;transition:opacity .5s, color .4s;}
+#fs-btn:hover{background:rgba(201,160,160,.3);border-color:rgba(201,160,160,.6);color:#fff;transform:scale(1.04);}
+#fs-btn:active{transform:scale(.97);}
 
 .slide{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:70px 80px 76px;overflow:hidden;opacity:0;pointer-events:none;}
 .slide.active{opacity:1;pointer-events:all;}
@@ -185,11 +187,22 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'DM Sans',sans-seri
 <body>
 
 <div id="prog"></div>
-<div id="counter">1 / 10</div>
+<div id="counter">1 / 11</div>
 <nav id="nav"></nav>
 <button class="abtn" id="bp"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
 <button class="abtn" id="bn"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
-<div id="kh">Space · Arrow Keys · Swipe to Navigate</div>
+<div id="kh">Space · Arrow Keys · F = Fullscreen</div>
+
+<!-- FULLSCREEN BUTTON -->
+<button id="fs-btn" title="Enter Fullscreen (F)" style="position:fixed;top:18px;right:52px;z-index:300;display:flex;align-items:center;gap:7px;background:rgba(201,160,160,.15);border:1px solid rgba(201,160,160,.35);border-radius:30px;padding:7px 16px 7px 12px;cursor:pointer;transition:all .25s;font-family:'DM Sans';color:rgba(255,255,255,.75);backdrop-filter:blur(8px);">
+  <span id="fs-icon" style="font-size:1rem;line-height:1;">⛶</span>
+  <span id="fs-label" style="font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;font-weight:400;">Fullscreen</span>
+</button>
+
+<!-- TOAST hint -->
+<div id="fs-toast" style="position:fixed;top:62px;right:52px;z-index:300;background:rgba(30,22,22,.88);border:1px solid rgba(201,160,160,.3);color:rgba(255,255,255,.72);font-family:'DM Sans';font-size:.72rem;letter-spacing:.08em;padding:8px 16px;border-radius:20px;backdrop-filter:blur(10px);pointer-events:none;opacity:0;transform:translateY(8px);transition:opacity .4s ease,transform .4s ease;">
+  Press <kbd style="background:rgba(255,255,255,.12);padding:1px 7px;border-radius:5px;font-family:monospace;font-size:.78rem;">F</kbd> to toggle &nbsp;·&nbsp; <kbd style="background:rgba(255,255,255,.12);padding:1px 7px;border-radius:5px;font-family:monospace;font-size:.78rem;">Esc</kbd> to exit
+</div>
 
 <div id="deck">
 
@@ -433,8 +446,98 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'DM Sans',sans-seri
   </div>
 </div>
 
-<!-- SLIDE 10: CLOSING -->
-<div class="slide dk4" id="s10">
+<!-- SLIDE 10: CONCLUSION -->
+<div class="slide lt1" id="s10">
+  <div style="max-width:1020px;width:100%;">
+
+    <!-- Header -->
+    <div style="margin-bottom:36px;">
+      <span class="stag an d1">Wrapping It Up</span>
+      <h2 class="stitle an d2" style="font-size:clamp(2.2rem,4.5vw,3.8rem);">What We <i>Learned Today</i></h2>
+    </div>
+
+    <!-- Two column layout: summary left, skills right -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start;">
+
+      <!-- Left: Big takeaway + skit summary -->
+      <div>
+        <div class="an d2" style="background:#fff;border:1px solid var(--sand);border-radius:18px;padding:28px 26px;box-shadow:0 4px 24px rgba(139,94,94,.1);position:relative;overflow:hidden;">
+          <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--rhino),var(--deep));"></div>
+          <p style="font-size:.7rem;letter-spacing:.25em;text-transform:uppercase;color:var(--rhino);font-weight:500;margin-bottom:12px;">The Big Takeaway</p>
+          <p style="font-family:'Fraunces';font-size:1.22rem;font-weight:700;color:var(--ink);line-height:1.45;font-style:italic;">"Good communication is not a personality trait. It is a set of skills anyone can learn and practise."</p>
+          <p style="font-size:.9rem;color:var(--stone);font-weight:300;line-height:1.7;margin-top:14px;">Every breakdown we showed in the bad skit came down to one or more of these five skills being ignored. Every improvement in the good skit came from actively using them. The difference was not talent. It was intention.</p>
+        </div>
+
+        <!-- Skit comparison boxes -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px;">
+          <div class="an d4" style="background:#fff;border:1px solid rgba(220,100,100,.25);border-radius:14px;padding:18px 16px;box-shadow:0 4px 16px rgba(200,80,80,.08);">
+            <p style="font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:#cc6666;font-weight:500;margin-bottom:10px;">&#10005; Bad Skit</p>
+            <ul style="list-style:none;font-size:.84rem;color:var(--stone);font-weight:300;line-height:1.7;">
+              <li style="padding:2px 0;">No eye contact made</li>
+              <li style="padding:2px 0;">Talking over each other</li>
+              <li style="padding:2px 0;">Closed off body language</li>
+              <li style="padding:2px 0;">Ideas shot down harshly</li>
+              <li style="padding:2px 0;">Minds were elsewhere</li>
+            </ul>
+          </div>
+          <div class="an d5" style="background:#fff;border:1px solid rgba(80,180,100,.25);border-radius:14px;padding:18px 16px;box-shadow:0 4px 16px rgba(80,180,100,.08);">
+            <p style="font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:#4aaa66;font-weight:500;margin-bottom:10px;">&#10003; Good Skit</p>
+            <ul style="list-style:none;font-size:.84rem;color:var(--stone);font-weight:300;line-height:1.7;">
+              <li style="padding:2px 0;">Natural eye contact held</li>
+              <li style="padding:2px 0;">Everyone got to finish</li>
+              <li style="padding:2px 0;">Open and engaged posture</li>
+              <li style="padding:2px 0;">Feedback built ideas up</li>
+              <li style="padding:2px 0;">Fully present the whole time</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: 5 skills summary cards -->
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <div class="an d3" style="background:#fff;border:1px solid var(--sand);border-radius:14px;padding:16px 18px;display:flex;align-items:center;gap:16px;box-shadow:0 4px 16px rgba(139,94,94,.08);transition:transform .25s;" onmouseover="this.style.transform='translateX(6px)'" onmouseout="this.style.transform='none'">
+          <div style="font-family:'Fraunces';font-size:1.7rem;color:var(--sand);font-weight:700;min-width:32px;line-height:1;">01</div>
+          <div>
+            <p style="font-size:.95rem;font-weight:500;color:var(--ink);">Eye Contact</p>
+            <p style="font-size:.82rem;color:var(--stone);font-weight:300;margin-top:2px;">Look at the person speaking. It signals respect and builds trust fast.</p>
+          </div>
+        </div>
+        <div class="an d4" style="background:#fff;border:1px solid var(--sand);border-radius:14px;padding:16px 18px;display:flex;align-items:center;gap:16px;box-shadow:0 4px 16px rgba(139,94,94,.08);transition:transform .25s;" onmouseover="this.style.transform='translateX(6px)'" onmouseout="this.style.transform='none'">
+          <div style="font-family:'Fraunces';font-size:1.7rem;color:var(--sand);font-weight:700;min-width:32px;line-height:1;">02</div>
+          <div>
+            <p style="font-size:.95rem;font-weight:500;color:var(--ink);">Listening</p>
+            <p style="font-size:.82rem;color:var(--stone);font-weight:300;margin-top:2px;">Actually take in what is said. Let people finish. Engage with their ideas.</p>
+          </div>
+        </div>
+        <div class="an d5" style="background:#fff;border:1px solid var(--sand);border-radius:14px;padding:16px 18px;display:flex;align-items:center;gap:16px;box-shadow:0 4px 16px rgba(139,94,94,.08);transition:transform .25s;" onmouseover="this.style.transform='translateX(6px)'" onmouseout="this.style.transform='none'">
+          <div style="font-family:'Fraunces';font-size:1.7rem;color:var(--sand);font-weight:700;min-width:32px;line-height:1;">03</div>
+          <div>
+            <p style="font-size:.95rem;font-weight:500;color:var(--ink);">Body Language</p>
+            <p style="font-size:.82rem;color:var(--stone);font-weight:300;margin-top:2px;">Open posture, lean in, nod. Your body communicates even when you are silent.</p>
+          </div>
+        </div>
+        <div class="an d6" style="background:#fff;border:1px solid var(--sand);border-radius:14px;padding:16px 18px;display:flex;align-items:center;gap:16px;box-shadow:0 4px 16px rgba(139,94,94,.08);transition:transform .25s;" onmouseover="this.style.transform='translateX(6px)'" onmouseout="this.style.transform='none'">
+          <div style="font-family:'Fraunces';font-size:1.7rem;color:var(--sand);font-weight:700;min-width:32px;line-height:1;">04</div>
+          <div>
+            <p style="font-size:.95rem;font-weight:500;color:var(--ink);">Giving Feedback</p>
+            <p style="font-size:.82rem;color:var(--stone);font-weight:300;margin-top:2px;">Acknowledge first, then add. Build ideas up rather than shutting them down.</p>
+          </div>
+        </div>
+        <div class="an d7" style="background:#fff;border:1px solid var(--sand);border-radius:14px;padding:16px 18px;display:flex;align-items:center;gap:16px;box-shadow:0 4px 16px rgba(139,94,94,.08);transition:transform .25s;" onmouseover="this.style.transform='translateX(6px)'" onmouseout="this.style.transform='none'">
+          <div style="font-family:'Fraunces';font-size:1.7rem;color:var(--sand);font-weight:700;min-width:32px;line-height:1;">05</div>
+          <div>
+            <p style="font-size:.95rem;font-weight:500;color:var(--ink);">Being Present</p>
+            <p style="font-size:.82rem;color:var(--stone);font-weight:300;margin-top:2px;">Phone down, mind in the room. Presence is the foundation every other skill sits on.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 11: CLOSING -->
+<div class="slide dk4" id="s11">
   <div style="font-family:'Bebas Neue';font-size:35vw;color:rgba(255,255,255,.04);position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;user-select:none;line-height:1;">GB</div>
   <div class="clin">
     <h2 class="clt an d1">Any<span>Questions?</span></h2>
@@ -517,6 +620,10 @@ function ui(){
   const bc=isLight?'rgba(139,94,94,.25)':'rgba(201,160,160,.28)';
   document.querySelectorAll('.abtn').forEach(b=>{b.style.borderColor=bc;b.style.background=isLight?'rgba(139,94,94,.1)':'rgba(201,160,160,.15)';});
   kh.style.color=isLight?'rgba(30,22,22,.18)':'rgba(255,255,255,.22)';
+  // Fullscreen button adapts too
+  fsBtn.style.color=isLight?'rgba(30,22,22,.6)':'rgba(255,255,255,.75)';
+  fsBtn.style.borderColor=isLight?'rgba(139,94,94,.3)':'rgba(201,160,160,.35)';
+  fsBtn.style.background=isLight?'rgba(139,94,94,.1)':'rgba(201,160,160,.15)';
 }
 
 // Init
@@ -553,7 +660,6 @@ function togglePlay(id){
 }
 
 // Auto-pause videos when navigating away
-const origGo = go;
 document.addEventListener('keydown', ()=>{
   ['badVid','goodVid'].forEach(id=>{
     const v=document.getElementById(id);
@@ -562,6 +668,74 @@ document.addEventListener('keydown', ()=>{
 }, {capture:true});
 document.getElementById('bn').addEventListener('click',()=>{['badVid','goodVid'].forEach(id=>{const v=document.getElementById(id);if(v&&!v.paused)v.pause();})},{capture:true});
 document.getElementById('bp').addEventListener('click',()=>{['badVid','goodVid'].forEach(id=>{const v=document.getElementById(id);if(v&&!v.paused)v.pause();})},{capture:true});
+
+/* ── FULLSCREEN ── */
+const fsBtn = document.getElementById('fs-btn');
+const fsIcon = document.getElementById('fs-icon');
+const fsLabel = document.getElementById('fs-label');
+const fsToast = document.getElementById('fs-toast');
+
+function enterFS(){
+  const el = document.documentElement;
+  if(el.requestFullscreen) el.requestFullscreen();
+  else if(el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+  else if(el.mozRequestFullScreen) el.mozRequestFullScreen();
+  else if(el.msRequestFullscreen) el.msRequestFullscreen();
+}
+function exitFS(){
+  if(document.exitFullscreen) document.exitFullscreen();
+  else if(document.webkitExitFullscreen) document.webkitExitFullscreen();
+  else if(document.mozCancelFullScreen) document.mozCancelFullScreen();
+  else if(document.msExitFullscreen) document.msExitFullscreen();
+}
+function isFS(){
+  return !!(document.fullscreenElement||document.webkitFullscreenElement||document.mozFullScreenElement||document.msFullscreenElement);
+}
+function toggleFS(){
+  isFS() ? exitFS() : enterFS();
+}
+
+function updateFSBtn(){
+  if(isFS()){
+    fsIcon.textContent='⊡';
+    fsLabel.textContent='Exit Fullscreen';
+    fsBtn.title='Exit Fullscreen (F)';
+  } else {
+    fsIcon.textContent='⛶';
+    fsLabel.textContent='Fullscreen';
+    fsBtn.title='Enter Fullscreen (F)';
+  }
+}
+
+// Show toast hint on first fullscreen entry
+let fsToastShown = false;
+function showFSToast(){
+  if(fsToastShown) return;
+  fsToastShown = true;
+  fsToast.style.opacity='1';
+  fsToast.style.transform='translateY(0)';
+  setTimeout(()=>{
+    fsToast.style.opacity='0';
+    fsToast.style.transform='translateY(10px)';
+  }, 3200);
+}
+
+document.addEventListener('fullscreenchange', ()=>{ updateFSBtn(); if(isFS()) showFSToast(); });
+document.addEventListener('webkitfullscreenchange', ()=>{ updateFSBtn(); if(isFS()) showFSToast(); });
+document.addEventListener('mozfullscreenchange', ()=>{ updateFSBtn(); if(isFS()) showFSToast(); });
+document.addEventListener('MSFullscreenChange', ()=>{ updateFSBtn(); if(isFS()) showFSToast(); });
+
+fsBtn.addEventListener('click', toggleFS);
+
+// F key to toggle fullscreen (not when typing)
+document.addEventListener('keydown', e=>{
+  if(e.key==='f'||e.key==='F'){
+    if(document.activeElement.tagName==='INPUT'||document.activeElement.tagName==='TEXTAREA') return;
+    e.preventDefault();
+    toggleFS();
+  }
+  // Escape is handled natively by browser to exit fullscreen
+});
 </script>
 </body>
 </html>
