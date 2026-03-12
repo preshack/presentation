@@ -33,8 +33,6 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'DM Sans',sans-seri
 .abtn svg{width:17px;height:17px;stroke:rgba(255,255,255,.7);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
 
 #kh{position:fixed;bottom:26px;left:50%;transform:translateX(-50%);z-index:200;font-size:.65rem;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.25);pointer-events:none;transition:opacity .5s, color .4s;}
-#fs-btn:hover{background:rgba(201,160,160,.3);border-color:rgba(201,160,160,.6);color:#fff;transform:scale(1.04);}
-#fs-btn:active{transform:scale(.97);}
 
 .slide{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:70px 80px 76px;overflow:hidden;opacity:0;pointer-events:none;}
 .slide.active{opacity:1;pointer-events:all;}
@@ -191,18 +189,9 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'DM Sans',sans-seri
 <nav id="nav"></nav>
 <button class="abtn" id="bp"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
 <button class="abtn" id="bn"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
-<div id="kh">Space · Arrow Keys · F = Fullscreen</div>
+<div id="kh">Space · Arrow Keys · Swipe to Navigate</div>
 
-<!-- FULLSCREEN BUTTON -->
-<button id="fs-btn" title="Enter Fullscreen (F)" style="position:fixed;top:18px;right:52px;z-index:300;display:flex;align-items:center;gap:7px;background:rgba(201,160,160,.15);border:1px solid rgba(201,160,160,.35);border-radius:30px;padding:7px 16px 7px 12px;cursor:pointer;transition:all .25s;font-family:'DM Sans';color:rgba(255,255,255,.75);backdrop-filter:blur(8px);">
-  <span id="fs-icon" style="font-size:1rem;line-height:1;">⛶</span>
-  <span id="fs-label" style="font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;font-weight:400;">Fullscreen</span>
-</button>
 
-<!-- TOAST hint -->
-<div id="fs-toast" style="position:fixed;top:62px;right:52px;z-index:300;background:rgba(30,22,22,.88);border:1px solid rgba(201,160,160,.3);color:rgba(255,255,255,.72);font-family:'DM Sans';font-size:.72rem;letter-spacing:.08em;padding:8px 16px;border-radius:20px;backdrop-filter:blur(10px);pointer-events:none;opacity:0;transform:translateY(8px);transition:opacity .4s ease,transform .4s ease;">
-  Press <kbd style="background:rgba(255,255,255,.12);padding:1px 7px;border-radius:5px;font-family:monospace;font-size:.78rem;">F</kbd> to toggle &nbsp;·&nbsp; <kbd style="background:rgba(255,255,255,.12);padding:1px 7px;border-radius:5px;font-family:monospace;font-size:.78rem;">Esc</kbd> to exit
-</div>
 
 <div id="deck">
 
@@ -562,180 +551,116 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'DM Sans',sans-seri
 </div>
 
 <script>
-const slides=Array.from(document.querySelectorAll('#deck .slide'));
-const navEl=document.getElementById('nav');
-const prog=document.getElementById('prog');
-const counter=document.getElementById('counter');
-const kh=document.getElementById('kh');
-const total=slides.length;
-let cur=0, busy=false;
+const slides = Array.from(document.querySelectorAll('#deck .slide'));
+const navEl  = document.getElementById('nav');
+const prog   = document.getElementById('prog');
+const counter= document.getElementById('counter');
+const kh     = document.getElementById('kh');
+const total  = slides.length;
+let cur = 0, busy = false;
 
-// Build dots
-slides.forEach((_,i)=>{
-  const d=document.createElement('button');
-  d.className='nd'; d.title=`Slide ${i+1}`;
-  d.onclick=()=>go(i);
+// Build nav dots
+slides.forEach((_,i) => {
+  const d = document.createElement('button');
+  d.className = 'nd';
+  d.title = 'Slide ' + (i+1);
+  d.onclick = () => go(i);
   navEl.appendChild(d);
 });
-const dots=navEl.querySelectorAll('.nd');
+const dots = navEl.querySelectorAll('.nd');
 
-function fireAnims(sl){
-  sl.querySelectorAll('.an').forEach(el=>el.classList.remove('show'));
-  requestAnimationFrame(()=>requestAnimationFrame(()=>{
-    sl.querySelectorAll('.an').forEach(el=>el.classList.add('show'));
+function fireAnims(sl) {
+  sl.querySelectorAll('.an').forEach(el => el.classList.remove('show'));
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    sl.querySelectorAll('.an').forEach(el => el.classList.add('show'));
   }));
 }
 
-function go(n, dir){
-  if(busy||n===cur||n<0||n>=total) return;
-  busy=true;
-  const d=dir!==undefined?dir:(n>cur?1:-1);
-  const old=slides[cur], next=slides[n];
+function go(n, dir) {
+  if (busy || n === cur || n < 0 || n >= total) return;
+  busy = true;
+  const d = (dir !== undefined) ? dir : (n > cur ? 1 : -1);
+  const oldSlide  = slides[cur];
+  const nextSlide = slides[n];
 
-  old.classList.add(d>0?'xtl':'xtr');
-  next.style.opacity='1';
-  next.classList.add(d>0?'efr':'efl');
-  next.classList.add('active');
-  fireAnims(next);
+  oldSlide.classList.add(d > 0 ? 'xtl' : 'xtr');
+  nextSlide.style.opacity = '1';
+  nextSlide.classList.add(d > 0 ? 'efr' : 'efl');
+  nextSlide.classList.add('active');
+  fireAnims(nextSlide);
 
-  setTimeout(()=>{
-    old.classList.remove('active','xtl','xtr');
-    old.style.opacity='';
-    next.classList.remove('efr','efl');
-    next.style.opacity='';
-    cur=n;
+  // Pause any playing videos
+  ['badVid','goodVid'].forEach(id => {
+    const v = document.getElementById(id);
+    if (v && !v.paused) v.pause();
+  });
+
+  setTimeout(() => {
+    oldSlide.classList.remove('active','xtl','xtr');
+    oldSlide.style.opacity = '';
+    nextSlide.classList.remove('efr','efl');
+    nextSlide.style.opacity = '';
+    cur = n;
     ui();
-    busy=false;
-  },560);
+    busy = false;
+  }, 560);
 }
 
-function ui(){
-  dots.forEach((d,i)=>d.classList.toggle('on',i===cur));
-  prog.style.width=((cur+1)/total*100)+'%';
-  counter.textContent=`${cur+1} / ${total}`;
-  const isLight=slides[cur].classList.contains('lt1')||slides[cur].classList.contains('lt2')||slides[cur].classList.contains('lt3');
-  counter.classList.toggle('lgt',isLight);
-  const sc=isLight?'rgba(30,22,22,.45)':'rgba(255,255,255,.65)';
-  document.querySelectorAll('.abtn svg').forEach(s=>s.style.stroke=sc);
-  const bc=isLight?'rgba(139,94,94,.25)':'rgba(201,160,160,.28)';
-  document.querySelectorAll('.abtn').forEach(b=>{b.style.borderColor=bc;b.style.background=isLight?'rgba(139,94,94,.1)':'rgba(201,160,160,.15)';});
-  kh.style.color=isLight?'rgba(30,22,22,.18)':'rgba(255,255,255,.22)';
-  // Fullscreen button adapts too
-  fsBtn.style.color=isLight?'rgba(30,22,22,.6)':'rgba(255,255,255,.75)';
-  fsBtn.style.borderColor=isLight?'rgba(139,94,94,.3)':'rgba(201,160,160,.35)';
-  fsBtn.style.background=isLight?'rgba(139,94,94,.1)':'rgba(201,160,160,.15)';
+function ui() {
+  dots.forEach((d,i) => d.classList.toggle('on', i === cur));
+  prog.style.width = ((cur+1) / total * 100) + '%';
+  counter.textContent = (cur+1) + ' / ' + total;
+  const isLight = slides[cur].classList.contains('lt1')
+               || slides[cur].classList.contains('lt2')
+               || slides[cur].classList.contains('lt3');
+  counter.classList.toggle('lgt', isLight);
+  const strokeCol = isLight ? 'rgba(30,22,22,.45)' : 'rgba(255,255,255,.65)';
+  document.querySelectorAll('.abtn svg').forEach(s => s.style.stroke = strokeCol);
+  const btnBg = isLight ? 'rgba(139,94,94,.1)' : 'rgba(201,160,160,.15)';
+  const btnBd = isLight ? 'rgba(139,94,94,.25)' : 'rgba(201,160,160,.28)';
+  document.querySelectorAll('.abtn').forEach(b => {
+    b.style.background    = btnBg;
+    b.style.borderColor   = btnBd;
+  });
+  kh.style.color = isLight ? 'rgba(30,22,22,.18)' : 'rgba(255,255,255,.22)';
 }
 
-// Init
+// Init first slide
 slides[0].classList.add('active');
 fireAnims(slides[0]);
 ui();
 
-// Keyboard
-document.addEventListener('keydown',e=>{
-  if(['ArrowDown','ArrowRight',' '].includes(e.key)){e.preventDefault();go(cur+1,1);}
-  if(['ArrowUp','ArrowLeft'].includes(e.key)){e.preventDefault();go(cur-1,-1);}
-});
+// Keyboard navigation — preventDefault first to stop browser scroll
+document.addEventListener('keydown', e => {
+  if (e.key === ' ' || e.key === 'ArrowDown' || e.key === 'ArrowRight' || e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+  if (e.key === ' ' || e.key === 'ArrowDown' || e.key === 'ArrowRight') { go(cur+1,  1); }
+  if (e.key === 'ArrowUp' || e.key === 'ArrowLeft')                     { go(cur-1, -1); }
+}, { capture: true });
 
-// Buttons
-document.getElementById('bn').onclick=()=>go(cur+1,1);
-document.getElementById('bp').onclick=()=>go(cur-1,-1);
+// Arrow button clicks
+document.getElementById('bn').onclick = () => go(cur+1,  1);
+document.getElementById('bp').onclick = () => go(cur-1, -1);
 
 // Touch swipe
-let tx=0;
-document.addEventListener('touchstart',e=>{tx=e.touches[0].clientX;},{passive:true});
-document.addEventListener('touchend',e=>{
-  const dx=e.changedTouches[0].clientX-tx;
-  if(Math.abs(dx)>48){dx<0?go(cur+1,1):go(cur-1,-1);}
+let touchStartX = 0;
+document.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, {passive:true});
+document.addEventListener('touchend',   e => {
+  const dx = e.changedTouches[0].clientX - touchStartX;
+  if (Math.abs(dx) > 48) { dx < 0 ? go(cur+1,1) : go(cur-1,-1); }
 });
 
-// Hide key hint
-setTimeout(()=>{kh.style.opacity='0';},5000);
+// Hide key hint after 5s
+setTimeout(() => { kh.style.opacity = '0'; }, 5000);
 
-// Pause videos when leaving their slide
-function togglePlay(id){
-  const v=document.getElementById(id);
-  if(!v) return;
+// Video toggle helper
+function togglePlay(id) {
+  const v = document.getElementById(id);
+  if (!v) return;
   v.paused ? v.play() : v.pause();
 }
-
-// Auto-pause videos when navigating away
-document.addEventListener('keydown', ()=>{
-  ['badVid','goodVid'].forEach(id=>{
-    const v=document.getElementById(id);
-    if(v && !v.paused) v.pause();
-  });
-}, {capture:true});
-document.getElementById('bn').addEventListener('click',()=>{['badVid','goodVid'].forEach(id=>{const v=document.getElementById(id);if(v&&!v.paused)v.pause();})},{capture:true});
-document.getElementById('bp').addEventListener('click',()=>{['badVid','goodVid'].forEach(id=>{const v=document.getElementById(id);if(v&&!v.paused)v.pause();})},{capture:true});
-
-/* ── FULLSCREEN ── */
-const fsBtn = document.getElementById('fs-btn');
-const fsIcon = document.getElementById('fs-icon');
-const fsLabel = document.getElementById('fs-label');
-const fsToast = document.getElementById('fs-toast');
-
-function enterFS(){
-  const el = document.documentElement;
-  if(el.requestFullscreen) el.requestFullscreen();
-  else if(el.webkitRequestFullscreen) el.webkitRequestFullscreen();
-  else if(el.mozRequestFullScreen) el.mozRequestFullScreen();
-  else if(el.msRequestFullscreen) el.msRequestFullscreen();
-}
-function exitFS(){
-  if(document.exitFullscreen) document.exitFullscreen();
-  else if(document.webkitExitFullscreen) document.webkitExitFullscreen();
-  else if(document.mozCancelFullScreen) document.mozCancelFullScreen();
-  else if(document.msExitFullscreen) document.msExitFullscreen();
-}
-function isFS(){
-  return !!(document.fullscreenElement||document.webkitFullscreenElement||document.mozFullScreenElement||document.msFullscreenElement);
-}
-function toggleFS(){
-  isFS() ? exitFS() : enterFS();
-}
-
-function updateFSBtn(){
-  if(isFS()){
-    fsIcon.textContent='⊡';
-    fsLabel.textContent='Exit Fullscreen';
-    fsBtn.title='Exit Fullscreen (F)';
-  } else {
-    fsIcon.textContent='⛶';
-    fsLabel.textContent='Fullscreen';
-    fsBtn.title='Enter Fullscreen (F)';
-  }
-}
-
-// Show toast hint on first fullscreen entry
-let fsToastShown = false;
-function showFSToast(){
-  if(fsToastShown) return;
-  fsToastShown = true;
-  fsToast.style.opacity='1';
-  fsToast.style.transform='translateY(0)';
-  setTimeout(()=>{
-    fsToast.style.opacity='0';
-    fsToast.style.transform='translateY(10px)';
-  }, 3200);
-}
-
-document.addEventListener('fullscreenchange', ()=>{ updateFSBtn(); if(isFS()) showFSToast(); });
-document.addEventListener('webkitfullscreenchange', ()=>{ updateFSBtn(); if(isFS()) showFSToast(); });
-document.addEventListener('mozfullscreenchange', ()=>{ updateFSBtn(); if(isFS()) showFSToast(); });
-document.addEventListener('MSFullscreenChange', ()=>{ updateFSBtn(); if(isFS()) showFSToast(); });
-
-fsBtn.addEventListener('click', toggleFS);
-
-// F key to toggle fullscreen (not when typing)
-document.addEventListener('keydown', e=>{
-  if(e.key==='f'||e.key==='F'){
-    if(document.activeElement.tagName==='INPUT'||document.activeElement.tagName==='TEXTAREA') return;
-    e.preventDefault();
-    toggleFS();
-  }
-  // Escape is handled natively by browser to exit fullscreen
-});
 </script>
 </body>
 </html>
