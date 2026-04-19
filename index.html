@@ -3,549 +3,672 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GB Rhinos – Communication Training</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;1,9..144,300;1,9..144,700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<title>HealthBridge – HackPrinceton</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 :root{
-  --rhino:#c9a0a0; --deep:#8b5e5e; --fog:#f7f2f2;
-  --stone:#6b5c5c; --ink:#1e1616; --cream:#fdf9f8;
-  --sand:#e8dbd8; --warm:#d4b8b0;
+  --tl:#14b8a6; --tl2:#0d7a70; --tl3:#0a5c54;
+  --am:#f59e0b; --rd:#f87171; --gr:#4ade80;
+  --fog:#eef6f5; --stone:#5a7872; --ink:#0b1a18;
+  --cream:#f4faf9; --sand:#b5d4cf; --muted:#8bb8b3;
+  --bg-dk:#060f0e;
 }
-html,body{width:100%;height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;}
-
+html,body{width:100%;height:100%;overflow:hidden;font-family:'Geist',sans-serif;}
 #deck{width:100vw;height:100vh;position:relative;overflow:hidden;}
 
-#prog{position:fixed;top:0;left:0;height:4px;z-index:999;background:linear-gradient(90deg,var(--rhino),var(--deep));box-shadow:0 0 14px rgba(201,160,160,.7);transition:width .4s ease;}
+/* PROGRESS */
+#prog{position:fixed;top:0;left:0;height:3px;z-index:999;background:linear-gradient(90deg,var(--tl),var(--am));transition:width .4s ease;}
 
-#counter{position:fixed;bottom:28px;right:72px;z-index:200;font-size:.78rem;font-weight:300;letter-spacing:.14em;color:rgba(255,255,255,.4);transition:color .4s;}
-#counter.lgt{color:rgba(30,22,22,.35);}
+/* COUNTER */
+#counter{position:fixed;bottom:30px;right:76px;z-index:200;font-family:'Syne';font-size:.7rem;font-weight:600;letter-spacing:.18em;color:rgba(255,255,255,.3);transition:color .4s;}
+#counter.lgt{color:rgba(11,26,24,.25);}
 
-#nav{position:fixed;right:22px;top:50%;transform:translateY(-50%);z-index:200;display:flex;flex-direction:column;gap:10px;}
-.nd{width:9px;height:9px;border-radius:50%;border:2px solid rgba(201,160,160,.5);background:transparent;cursor:pointer;transition:all .3s;padding:0;}
-.nd.on{background:var(--rhino);border-color:var(--rhino);box-shadow:0 0 10px rgba(201,160,160,.6);}
-.nd:hover{background:rgba(201,160,160,.4);}
+/* NAV DOTS */
+#nav{position:fixed;right:24px;top:50%;transform:translateY(-50%);z-index:200;display:flex;flex-direction:column;gap:8px;}
+.nd{width:8px;height:8px;border-radius:50%;border:1.5px solid rgba(20,184,166,.4);background:transparent;cursor:pointer;transition:all .3s;padding:0;}
+.nd.on{background:var(--tl);border-color:var(--tl);box-shadow:0 0 8px rgba(20,184,166,.5);}
+.nd:hover{background:rgba(20,184,166,.3);}
 
-.abtn{position:fixed;z-index:200;background:rgba(201,160,160,.15);border:1px solid rgba(201,160,160,.3);border-radius:50%;width:44px;height:44px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .3s;}
-.abtn:hover{background:rgba(201,160,160,.3);}
-#bp{bottom:26px;left:50%;transform:translateX(-66px);}
-#bn{bottom:26px;left:50%;transform:translateX(22px);}
-.abtn svg{width:17px;height:17px;stroke:rgba(255,255,255,.7);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+/* NAV BUTTONS */
+.abtn{position:fixed;z-index:200;background:rgba(20,184,166,.1);border:1px solid rgba(20,184,166,.22);border-radius:50%;width:42px;height:42px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .3s;}
+.abtn:hover{background:rgba(20,184,166,.24);}
+#bp{bottom:28px;left:50%;transform:translateX(-60px);}
+#bn{bottom:28px;left:50%;transform:translateX(18px);}
+.abtn svg{width:16px;height:16px;stroke:rgba(255,255,255,.65);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+#kh{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);z-index:200;font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.2);pointer-events:none;transition:opacity .5s,color .4s;font-family:'Syne';}
 
-#kh{position:fixed;bottom:26px;left:50%;transform:translateX(-50%);z-index:200;font-size:.65rem;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.25);pointer-events:none;transition:opacity .5s, color .4s;}
-
-.slide{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:70px 80px 76px;overflow:hidden;opacity:0;pointer-events:none;}
+/* SLIDES */
+.slide{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:64px 80px 72px;overflow:hidden;opacity:0;pointer-events:none;}
 .slide.active{opacity:1;pointer-events:all;}
-.slide.efr{animation:fromR .55s cubic-bezier(.22,1,.36,1) forwards;}
-.slide.efl{animation:fromL .55s cubic-bezier(.22,1,.36,1) forwards;}
-.slide.xtl{animation:toL   .45s cubic-bezier(.55,0,.45,1) forwards;}
-.slide.xtr{animation:toR   .45s cubic-bezier(.55,0,.45,1) forwards;}
-@keyframes fromR{from{opacity:0;transform:translateX(55px);}to{opacity:1;transform:none;}}
-@keyframes fromL{from{opacity:0;transform:translateX(-55px);}to{opacity:1;transform:none;}}
-@keyframes toL  {from{opacity:1;transform:none;}to{opacity:0;transform:translateX(-55px);}}
-@keyframes toR  {from{opacity:1;transform:none;}to{opacity:0;transform:translateX(55px);}}
+.slide.efr{animation:fromR .52s cubic-bezier(.22,1,.36,1) forwards;}
+.slide.efl{animation:fromL .52s cubic-bezier(.22,1,.36,1) forwards;}
+.slide.xtl{animation:toL   .42s cubic-bezier(.55,0,.45,1) forwards;}
+.slide.xtr{animation:toR   .42s cubic-bezier(.55,0,.45,1) forwards;}
+@keyframes fromR{from{opacity:0;transform:translateX(48px);}to{opacity:1;transform:none;}}
+@keyframes fromL{from{opacity:0;transform:translateX(-48px);}to{opacity:1;transform:none;}}
+@keyframes toL  {from{opacity:1;transform:none;}to{opacity:0;transform:translateX(-48px);}}
+@keyframes toR  {from{opacity:1;transform:none;}to{opacity:0;transform:translateX(48px);}}
 
-.an{opacity:0;transform:translateY(20px);transition:opacity .5s ease,transform .5s ease;}
+/* ANIMATION */
+.an{opacity:0;transform:translateY(18px);transition:opacity .5s ease,transform .5s ease;}
 .an.show{opacity:1;transform:none;}
-.an.fl{transform:translateX(-28px);}.an.fl.show{transform:none;}
-.an.fr{transform:translateX(28px);}.an.fr.show{transform:none;}
-.an.sc{transform:scale(.92);}.an.sc.show{transform:scale(1);}
-.an.d1{transition-delay:.08s;}.an.d2{transition-delay:.2s;}.an.d3{transition-delay:.32s;}
-.an.d4{transition-delay:.44s;}.an.d5{transition-delay:.56s;}.an.d6{transition-delay:.68s;}
-.an.d7{transition-delay:.8s;}.an.d8{transition-delay:.92s;}
+.an.fl{transform:translateX(-24px);}.an.fl.show{transform:none;}
+.an.fr{transform:translateX(24px);}.an.fr.show{transform:none;}
+.an.sc{transform:scale(.93);}.an.sc.show{transform:scale(1);}
+.an.d1{transition-delay:.07s;}.an.d2{transition-delay:.18s;}.an.d3{transition-delay:.29s;}
+.an.d4{transition-delay:.4s;}.an.d5{transition-delay:.51s;}.an.d6{transition-delay:.62s;}
+.an.d7{transition-delay:.73s;}.an.d8{transition-delay:.84s;}
+@keyframes pulse-dot{0%,100%{opacity:1;}50%{opacity:.35;}}
 
-/* BG TYPES */
-.dk1{background:radial-gradient(ellipse at 70% 30%,#3a2020 0%,#1e1616 60%,#120e0e 100%);}
-.dk2{background:linear-gradient(145deg,#2a1e1e,#1e1414);}
-.dk3{background:linear-gradient(150deg,#2e1e1e,#1e1414);}
-.dk4{background:radial-gradient(ellipse at 30% 70%,#3a2020 0%,#1e1616 60%);}
-.good-bg{background:linear-gradient(145deg,#1a2620,#141e18);}
+/* BACKGROUNDS */
+.dk1{background:radial-gradient(ellipse at 65% 25%,#0e2d29 0%,#07120f 55%,var(--bg-dk) 100%);}
+.dk2{background:linear-gradient(150deg,#0d2320,#060e0d);}
+.dk3{background:linear-gradient(155deg,#0f2a26,#061410);}
+.dk4{background:radial-gradient(ellipse at 28% 72%,#0c2520 0%,#081816 60%);}
 .lt1{background:var(--fog);}
 .lt2{background:var(--cream);}
-.lt3{background:linear-gradient(150deg,#f5ecea,#ede3e0);}
+.lt3{background:linear-gradient(150deg,#ecf4f3,#e3eeec);}
 
-/* ─── SLIDE 1 COVER ─── */
-.wmk{position:absolute;font-family:'Bebas Neue';font-size:40vw;color:rgba(255,255,255,.025);pointer-events:none;line-height:1;top:50%;left:50%;transform:translate(-50%,-50%);user-select:none;}
-.s1in{display:flex;flex-direction:column;align-items:center;z-index:1;}
-.lpill{display:flex;align-items:center;gap:32px;background:rgba(201,160,160,.07);border:1px solid rgba(201,160,160,.25);padding:24px 44px;border-radius:24px;backdrop-filter:blur(8px);margin-bottom:30px;}
-.ltcol{display:flex;flex-direction:column;gap:4px;}
-.ley{font-family:'DM Sans';font-weight:200;font-size:.8rem;letter-spacing:.3em;color:rgba(201,160,160,.65);text-transform:uppercase;}
-.lnm{display:flex;align-items:center;gap:14px;}
-.lgb{font-family:'Bebas Neue';font-size:4.2rem;color:rgba(255,255,255,.95);letter-spacing:.1em;line-height:1;}
-.ldv{width:3px;height:40px;background:var(--rhino);display:inline-block;opacity:.6;border-radius:2px;}
-.lrh{font-family:'Bebas Neue';font-size:4.2rem;color:var(--rhino);letter-spacing:.1em;line-height:1;}
-.ltg{font-family:'DM Sans';font-weight:300;font-size:.82rem;letter-spacing:.2em;color:rgba(255,255,255,.4);text-transform:uppercase;}
-.csub{font-size:1.1rem;font-weight:300;color:rgba(255,255,255,.38);letter-spacing:.14em;text-transform:uppercase;margin-bottom:22px;}
-.mrow{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;max-width:680px;}
-.mchip{padding:7px 20px;border-radius:30px;background:rgba(201,160,160,.1);border:1px solid rgba(201,160,160,.25);color:rgba(255,255,255,.7);font-size:.9rem;font-weight:300;letter-spacing:.06em;}
+/* WATERMARK */
+.wmk{position:absolute;font-family:'Syne';font-size:36vw;font-weight:800;color:rgba(255,255,255,.018);pointer-events:none;line-height:1;top:50%;left:50%;transform:translate(-50%,-50%);user-select:none;white-space:nowrap;letter-spacing:-.02em;}
+.wmk-lt{position:absolute;font-family:'Syne';font-size:36vw;font-weight:800;color:rgba(20,184,166,.026);pointer-events:none;line-height:1;top:50%;left:50%;transform:translate(-50%,-50%);user-select:none;white-space:nowrap;}
 
-/* ─── SLIDE 2 OVERVIEW ─── */
-.awt{max-width:1020px;width:100%;display:grid;grid-template-columns:1.2fr 1fr;gap:60px;align-items:center;}
-.stag{font-size:.72rem;letter-spacing:.3em;text-transform:uppercase;color:var(--rhino);font-weight:400;margin-bottom:14px;display:block;}
-.stitle{font-family:'Fraunces';font-size:clamp(2.2rem,4.2vw,3.5rem);font-weight:700;line-height:1.1;color:var(--ink);}
-.stitle i{color:var(--deep);font-style:italic;}
-.bt{font-size:1.02rem;line-height:1.78;color:var(--stone);font-weight:300;margin-top:16px;}
-.srow{display:flex;gap:28px;margin-top:28px;}
-.snum{font-family:'Fraunces';font-size:3.3rem;font-weight:700;color:var(--rhino);line-height:1;}
-.slbl{font-size:.73rem;letter-spacing:.12em;text-transform:uppercase;color:var(--stone);margin-top:4px;}
-.glist{list-style:none;}
-.gi{display:flex;gap:18px;align-items:flex-start;padding:17px 0;border-bottom:1px solid var(--sand);}
-.gi:first-child{padding-top:0;}
-.gi:last-child{border-bottom:none;}
-.gnum{font-family:'Fraunces';font-size:1.9rem;color:var(--sand);font-weight:700;line-height:1;min-width:34px;}
-.gt strong{display:block;font-size:1rem;color:var(--ink);margin-bottom:4px;}
-.gt p{font-size:.88rem;color:var(--stone);line-height:1.6;font-weight:300;}
+/* ═══════ LOGO COMPONENT ═══════ */
+.logo-mark{display:flex;align-items:center;gap:14px;}
+.logo-icon{width:48px;height:48px;flex-shrink:0;}
+.logo-wordmark{display:flex;flex-direction:column;gap:1px;}
+.logo-name{font-family:'Syne';font-size:1.45rem;font-weight:800;letter-spacing:-.02em;line-height:1;}
+.logo-name .hb{color:#fff;}
+.logo-name .bridge{color:var(--tl);}
+.lt1 .logo-name .hb,.lt2 .logo-name .hb,.lt3 .logo-name .hb{color:var(--ink);}
+.logo-sub{font-family:'Geist';font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.35);font-weight:300;}
+.lt1 .logo-sub,.lt2 .logo-sub,.lt3 .logo-sub{color:var(--stone);}
 
-/* ─── VIDEO SLIDES ─── */
-.vsw{max-width:1000px;width:100%;}
-.vtag{display:inline-block;font-size:.72rem;letter-spacing:.3em;text-transform:uppercase;padding:6px 20px;border-radius:30px;margin-bottom:16px;font-weight:400;}
-.vbad{background:rgba(200,80,80,.2);color:#ffb0b0;border:1px solid rgba(220,80,80,.3);}
-.vgood{background:rgba(80,200,120,.15);color:#b0ffca;border:1px solid rgba(80,200,120,.25);}
-.vtitle{font-family:'Fraunces';font-size:clamp(1.9rem,4vw,3.4rem);font-weight:700;color:#fff;line-height:1.1;margin-bottom:26px;}
-.vtitle i{font-style:italic;color:#ffb0b0;}
-.vtitle.gt i{color:#b0ffca;}
-.vlay{display:grid;grid-template-columns:1.15fr 1fr;gap:28px;align-items:start;}
-.vbox{border-radius:16px;aspect-ratio:16/9;background:#0e0a0a;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;border:2px solid rgba(255,255,255,.08);box-shadow:0 20px 60px rgba(0,0,0,.4);cursor:pointer;transition:border-color .3s;overflow:hidden;}
-.vbox:hover{border-color:rgba(201,160,160,.4);}
-.pc{width:64px;height:64px;border-radius:50%;border:2px solid rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center;transition:background .3s;}
-.vbox:hover .pc{background:var(--rhino);border-color:var(--rhino);}
-.pt{width:0;height:0;border-top:12px solid transparent;border-bottom:12px solid transparent;border-left:20px solid rgba(255,255,255,.8);margin-left:4px;}
-.vlbl{font-size:.85rem;color:rgba(255,255,255,.35);letter-spacing:.1em;text-transform:uppercase;font-weight:300;}
-.vpts{list-style:none;}
-.vpt{display:flex;gap:13px;align-items:flex-start;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.07);font-size:.97rem;color:rgba(255,255,255,.65);font-weight:300;line-height:1.55;}
-.vpt:last-child{border:none;}
-.vd{width:8px;height:8px;min-width:8px;border-radius:50%;margin-top:7px;}
-.db{background:#ff8080;}.dg{background:#80ffaa;}
+/* ═══════ COVER ═══════ */
+.s1in{display:flex;flex-direction:column;align-items:center;z-index:1;text-align:center;}
 
-/* ─── SKILL SLIDES ─── */
+.cover-pill{display:flex;align-items:center;gap:24px;background:rgba(20,184,166,.06);border:1px solid rgba(20,184,166,.2);padding:24px 40px;border-radius:20px;backdrop-filter:blur(12px);margin-bottom:32px;}
+.cover-logo-name{font-family:'Syne';font-size:3rem;font-weight:800;letter-spacing:-.03em;line-height:1;}
+.cover-logo-name .hb{color:#fff;}
+.cover-logo-name .br{color:var(--tl);}
+.cover-event{font-family:'Geist';font-size:.7rem;letter-spacing:.28em;text-transform:uppercase;color:rgba(20,184,166,.55);font-weight:300;margin-bottom:6px;}
+.cover-tag{font-family:'Geist';font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.32);font-weight:300;margin-top:4px;}
+
+.tagline{font-family:'Instrument Serif';font-size:1.1rem;font-style:italic;color:rgba(255,255,255,.4);letter-spacing:.04em;margin-bottom:24px;}
+
+.chip-row{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;max-width:680px;}
+.mchip{padding:6px 16px;border-radius:30px;background:rgba(20,184,166,.08);border:1px solid rgba(20,184,166,.2);color:rgba(255,255,255,.65);font-size:.82rem;font-weight:300;letter-spacing:.03em;}
+
+/* ═══════ SECTION HEADERS ═══════ */
+.stag{font-family:'Syne';font-size:.65rem;letter-spacing:.32em;text-transform:uppercase;color:var(--tl2);font-weight:600;margin-bottom:12px;display:block;}
+.stitle{font-family:'Instrument Serif';font-size:clamp(2.2rem,4vw,3.3rem);line-height:1.1;color:var(--ink);}
+.stitle i{color:var(--tl2);font-style:italic;}
+.bt{font-size:.95rem;line-height:1.75;color:var(--stone);font-weight:300;margin-top:12px;}
+
+/* DARK SECTION HEADERS */
+.dk-tag{font-family:'Syne';font-size:.65rem;letter-spacing:.32em;text-transform:uppercase;color:var(--tl);font-weight:600;margin-bottom:12px;display:block;}
+.dk-title{font-family:'Instrument Serif';font-size:clamp(2.2rem,3.8vw,3.2rem);font-weight:400;color:#fff;line-height:1.08;}
+.dk-title i{color:var(--tl);font-style:italic;}
+.dk-sub{font-size:.93rem;font-weight:300;color:rgba(255,255,255,.38);margin-top:8px;line-height:1.65;}
+
+/* ═══════ CARDS – DARK ═══════ */
 .skw{max-width:980px;width:100%;}
-.skhd{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:34px;flex-wrap:wrap;gap:14px;}
-.sknum{font-family:'Bebas Neue';font-size:7rem;line-height:1;user-select:none;}
-.lt2 .sknum,.lt3 .sknum{color:var(--sand);}
-.dk3 .sknum{color:rgba(255,255,255,.06);}
-.sktitle{font-family:'Fraunces';font-size:clamp(2rem,4vw,3.4rem);font-weight:700;line-height:1.05;}
-.sktitle i{font-style:italic;}
-.lt2 .sktitle,.lt3 .sktitle{color:var(--ink);}
-.lt2 .sktitle i,.lt3 .sktitle i{color:var(--deep);}
-.dk3 .sktitle{color:#fff;}
-.dk3 .sktitle i{color:var(--rhino);}
-.sksub{font-size:.98rem;font-weight:300;margin-top:7px;}
-.lt2 .sksub,.lt3 .sksub{color:var(--stone);}
-.dk3 .sksub{color:rgba(255,255,255,.45);}
-
-.skcs{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
-.skc{border-radius:16px;padding:26px 22px;position:relative;overflow:hidden;transition:transform .3s,box-shadow .3s;}
-.skc:hover{transform:translateY(-5px);}
-.lt2 .skc,.lt3 .skc{background:#fff;border:1px solid var(--sand);box-shadow:0 4px 20px rgba(139,94,94,.1);}
-.lt2 .skc:hover,.lt3 .skc:hover{box-shadow:0 14px 42px rgba(139,94,94,.18);}
-.dk3 .skc{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);}
-.dk3 .skc:hover{background:rgba(255,255,255,.09);}
-.skc::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
-.lt2 .skc::before,.lt3 .skc::before{background:linear-gradient(90deg,var(--rhino),var(--deep));}
-.dk3 .skc::before{background:linear-gradient(90deg,rgba(201,160,160,.6),rgba(139,94,94,.4));}
-
-.clbl{font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;font-weight:500;margin-bottom:11px;display:flex;align-items:center;gap:7px;}
-.lt2 .wr,.lt3 .wr{color:#cc6666;} .lt2 .fx,.lt3 .fx{color:var(--deep);} .lt2 .wh,.lt3 .wh{color:var(--stone);}
-.dk3 .wr{color:#ff9999;} .dk3 .fx{color:var(--rhino);} .dk3 .wh{color:rgba(255,255,255,.45);}
-.id{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
-.ir{background:#cc6666;} .ip{background:var(--rhino);} .ig{background:#8eaa88;}
-.dk3 .ir{background:#ff8888;}
-
-.skc h3{font-size:1.05rem;font-weight:500;margin-bottom:9px;line-height:1.2;}
+.skhd{margin-bottom:26px;}
+.skcs{display:grid;grid-template-columns:repeat(3,1fr);gap:13px;}
+.skc{border-radius:14px;padding:22px 18px;position:relative;overflow:hidden;transition:transform .25s,box-shadow .25s;}
+.skc:hover{transform:translateY(-4px);}
+.skc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
+.lt2 .skc,.lt3 .skc{background:#fff;border:1px solid var(--sand);box-shadow:0 3px 16px rgba(13,122,112,.07);}
+.lt2 .skc:hover,.lt3 .skc:hover{box-shadow:0 12px 36px rgba(13,122,112,.12);}
+.lt2 .skc::before,.lt3 .skc::before{background:linear-gradient(90deg,var(--tl),var(--tl2));}
+.dk3 .skc,.dk1 .skc{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);}
+.dk3 .skc:hover,.dk1 .skc:hover{background:rgba(255,255,255,.08);}
+.dk3 .skc::before,.dk1 .skc::before{background:linear-gradient(90deg,rgba(20,184,166,.6),rgba(13,122,112,.35));}
+.skc h3{font-family:'Syne';font-size:.92rem;font-weight:700;margin-bottom:6px;line-height:1.25;}
 .lt2 .skc h3,.lt3 .skc h3{color:var(--ink);}
-.dk3 .skc h3{color:#fff;}
-.skc p{font-size:.92rem;line-height:1.7;font-weight:300;}
+.dk3 .skc h3,.dk1 .skc h3{color:#fff;}
+.skc p{font-size:.84rem;line-height:1.68;font-weight:300;}
 .lt2 .skc p,.lt3 .skc p{color:var(--stone);}
-.dk3 .skc p{color:rgba(255,255,255,.55);}
+.dk3 .skc p,.dk1 .skc p{color:rgba(255,255,255,.48);}
+.skc-icon{font-size:1.5rem;margin-bottom:10px;}
 
-.blist{list-style:none;margin-top:2px;}
-.blist li{display:flex;gap:9px;align-items:flex-start;font-size:.92rem;line-height:1.62;padding:3px 0;font-weight:300;}
-.blist li::before{content:'';width:6px;height:6px;border-radius:50%;flex-shrink:0;margin-top:7px;}
+/* ═══════ STAT BOX ═══════ */
+.statbox{border-left:3px solid var(--tl);border-radius:0 10px 10px 0;padding:14px 18px;margin-bottom:10px;background:rgba(255,255,255,.04);}
+.statbox.am{border-color:var(--am);}
+.statbox.rd{border-color:var(--rd);}
+.statnum{font-family:'Syne';font-size:2.6rem;font-weight:800;color:var(--tl);line-height:1;}
+.statbox.am .statnum{color:var(--am);}
+.statbox.rd .statnum{color:var(--rd);}
+.statdesc{font-size:.8rem;color:rgba(255,255,255,.38);margin-top:4px;font-weight:300;line-height:1.5;}
+
+/* ═══════ PLACEHOLDER ═══════ */
+.ph{border:1.5px dashed rgba(20,184,166,.28);border-radius:10px;background:rgba(20,184,166,.03);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:14px;}
+.lt2 .ph,.lt3 .ph{border-color:rgba(13,122,112,.22);background:rgba(13,122,112,.03);}
+.phlbl{font-size:.64rem;letter-spacing:.1em;color:rgba(20,184,166,.5);text-align:center;font-weight:400;line-height:1.5;font-family:'Syne';}
+.lt2 .phlbl,.lt3 .phlbl{color:rgba(13,122,112,.45);}
+.phicon{font-size:20px;opacity:.35;}
+
+/* ═══════ PIPELINE ═══════ */
+.pblock{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:16px;}
+.pstep{display:flex;gap:12px;align-items:flex-start;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.05);}
+.pstep:last-child{border:none;}
+.pnum{width:22px;height:22px;border-radius:50%;background:rgba(20,184,166,.12);border:1px solid rgba(20,184,166,.3);display:flex;align-items:center;justify-content:center;font-family:'Syne';font-size:.75rem;font-weight:700;color:var(--tl);flex-shrink:0;margin-top:1px;}
+.ptxt{font-size:.84rem;color:rgba(255,255,255,.58);line-height:1.6;font-weight:300;}
+.ptxt code{font-family:monospace;font-size:.74rem;background:rgba(20,184,166,.1);color:var(--tl);padding:1px 5px;border-radius:3px;}
+.ptxt strong{color:#fff;font-weight:500;}
+
+/* ═══════ SAFETY CHIPS ═══════ */
+.srow2{display:flex;gap:8px;margin-top:10px;}
+.sc2{flex:1;border-radius:9px;padding:10px;text-align:center;font-size:.78rem;font-weight:600;font-family:'Syne';}
+.scg{background:rgba(74,222,128,.08);color:#4ade80;border:1px solid rgba(74,222,128,.22);}
+.sca{background:rgba(245,158,11,.08);color:var(--am);border:1px solid rgba(245,158,11,.22);}
+.scr{background:rgba(248,113,113,.08);color:var(--rd);border:1px solid rgba(248,113,113,.22);}
+
+/* ═══════ ROW CARDS (light) ═══════ */
+.rowcard{background:#fff;border:1px solid var(--sand);border-radius:12px;padding:13px 15px;display:flex;align-items:flex-start;gap:14px;box-shadow:0 3px 14px rgba(13,122,112,.06);transition:transform .22s;}
+.rowcard:hover{transform:translateX(5px);}
+.rcnum{font-family:'Syne';font-size:1.3rem;font-weight:800;color:var(--sand);min-width:28px;line-height:1;flex-shrink:0;padding-top:2px;}
+.rctitle{font-family:'Syne';font-size:.88rem;font-weight:700;color:var(--ink);}
+.rcdesc{font-size:.8rem;color:var(--stone);font-weight:300;margin-top:2px;line-height:1.55;}
+
+/* ═══════ DIFF ROWS ═══════ */
+.diffgood{display:flex;gap:10px;align-items:flex-start;padding:8px 12px;border-radius:8px;margin-bottom:6px;font-size:.84rem;line-height:1.55;background:rgba(20,184,166,.06);border:1px solid rgba(20,184,166,.12);color:rgba(255,255,255,.8);}
+.diffbad{display:flex;gap:10px;align-items:flex-start;padding:8px 12px;border-radius:8px;margin-bottom:6px;font-size:.84rem;line-height:1.55;background:rgba(239,68,68,.04);border:1px solid rgba(239,68,68,.09);color:rgba(255,255,255,.35);}
+
+/* ═══════ HIGHLIGHT CARD ═══════ */
+.hcard{background:#fff;border:1px solid var(--sand);border-radius:14px;padding:20px;box-shadow:0 4px 20px rgba(13,122,112,.08);position:relative;overflow:hidden;}
+.hcard::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--tl),var(--tl2));}
+
+/* ═══════ ARCH ═══════ */
+.archlayer{flex:1;display:flex;flex-direction:column;}
+.archcard{border-radius:10px;padding:12px 13px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.04);flex:1;}
+.archcard.hl{border-color:rgba(20,184,166,.36);background:rgba(20,184,166,.07);}
+.archcard.am{border-color:rgba(245,158,11,.26);background:rgba(245,158,11,.05);}
+.archlabel{font-family:'Syne';font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;color:var(--tl);margin-bottom:3px;font-weight:600;}
+.archcard.am .archlabel{color:var(--am);}
+.archname{font-family:'Syne';font-size:.88rem;font-weight:700;color:#fff;margin-bottom:3px;}
+.archtech{font-size:.74rem;color:rgba(255,255,255,.4);line-height:1.5;font-weight:300;}
+.archbadge{display:inline-block;font-family:'Syne';font-size:.55rem;background:rgba(20,184,166,.12);color:var(--tl);padding:2px 7px;border-radius:4px;letter-spacing:.07em;font-weight:700;margin-bottom:5px;}
+.archbadge.am{background:rgba(245,158,11,.12);color:var(--am);}
+.archconn{width:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0;position:relative;}
+.archconn::before{content:'';position:absolute;width:1px;height:100%;background:linear-gradient(180deg,rgba(20,184,166,.32),rgba(245,158,11,.22));left:50%;}
+
+/* ═══════ G-LIST ═══════ */
+.glist{list-style:none;}
+.gi{display:flex;gap:16px;align-items:flex-start;padding:14px 0;border-bottom:1px solid rgba(255,255,255,.06);}
+.gi:last-child{border:none;padding-bottom:0;}
+.gi:first-child{padding-top:0;}
+.gi-arrow{font-family:'Instrument Serif';font-size:1.3rem;color:var(--tl);min-width:22px;font-weight:400;line-height:1;flex-shrink:0;}
+.gi-title{font-family:'Syne';font-size:.88rem;font-weight:700;color:#fff;margin-bottom:2px;}
+.gi-desc{font-size:.82rem;color:rgba(255,255,255,.36);font-weight:300;line-height:1.55;}
+.glist-lt{list-style:none;}
+.gi-lt{display:flex;gap:16px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--sand);}
+.gi-lt:last-child{border:none;padding-bottom:0;}
+.gi-lt:first-child{padding-top:0;}
+.gi-num{font-family:'Instrument Serif';font-size:1.8rem;color:var(--sand);min-width:30px;line-height:1;flex-shrink:0;}
+.gi-t strong{font-family:'Syne';font-size:.88rem;color:var(--ink);font-weight:700;display:block;margin-bottom:2px;}
+.gi-t p{font-size:.82rem;color:var(--stone);line-height:1.58;font-weight:300;}
+
+/* ═══════ BLIST ═══════ */
+.blist{list-style:none;margin-top:4px;}
+.blist li{display:flex;gap:9px;align-items:flex-start;font-size:.84rem;line-height:1.62;padding:2px 0;font-weight:300;}
+.blist li::before{content:'';width:5px;height:5px;border-radius:50%;flex-shrink:0;margin-top:8px;}
 .lt2 .blist li,.lt3 .blist li{color:var(--stone);}
-.lt2 .blist li::before,.lt3 .blist li::before{background:var(--rhino);}
-.dk3 .blist li{color:rgba(255,255,255,.55);}
-.dk3 .blist li::before{background:var(--rhino);}
+.lt2 .blist li::before,.lt3 .blist li::before{background:var(--tl);}
+.dk3 .blist li,.dk1 .blist li,.dk4 .blist li,.dk2 .blist li{color:rgba(255,255,255,.48);}
+.dk3 .blist li::before,.dk1 .blist li::before,.dk4 .blist li::before,.dk2 .blist li::before{background:var(--tl);}
+.blist li.am::before{background:var(--am)!important;}
+.blist li.rd::before{background:var(--rd)!important;}
 
-/* ─── CLOSING ─── */
+/* ═══════ CHIPS ═══════ */
+.chip{display:inline-block;font-family:'Syne';padding:4px 12px;border-radius:30px;font-size:.72rem;font-weight:700;letter-spacing:.04em;}
+.cteal{background:rgba(20,184,166,.1);border:1px solid rgba(20,184,166,.25);color:var(--tl);}
+.camber{background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.25);color:var(--am);}
+.cslate{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.55);}
+
+/* ═══════ CLOSING ═══════ */
 .clin{z-index:1;display:flex;flex-direction:column;align-items:center;text-align:center;}
-.clt{font-family:'Bebas Neue';font-size:clamp(4rem,11vw,10rem);color:#fff;line-height:.9;letter-spacing:.03em;text-shadow:0 2px 30px rgba(201,160,160,.3);}
-.clt span{color:var(--rhino);display:block;}
-.crl{width:80px;height:2px;background:var(--rhino);margin:26px auto;box-shadow:0 0 12px rgba(201,160,160,.5);}
-.rcg{display:grid;grid-template-columns:repeat(5,1fr);gap:13px;max-width:820px;width:100%;}
-.rcc{background:rgba(255,255,255,.09);border:1px solid rgba(201,160,160,.35);border-radius:13px;padding:17px 12px;text-align:center;transition:background .3s,transform .3s;}
-.rcc:hover{background:rgba(201,160,160,.18);transform:translateY(-3px);}
-.rcn{font-family:'Fraunces';font-size:2rem;color:var(--rhino);font-weight:700;line-height:1;}
-.rcl{font-size:.72rem;color:rgba(255,255,255,.78);text-transform:uppercase;letter-spacing:.1em;margin-top:7px;font-weight:400;}
-.csb{font-size:.95rem;color:rgba(255,255,255,.55);letter-spacing:.16em;text-transform:uppercase;margin-top:22px;font-weight:300;}
-.trow{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:14px;}
-.tc{padding:6px 16px;border-radius:24px;background:rgba(201,160,160,.15);border:1px solid rgba(201,160,160,.4);color:rgba(255,255,255,.85);font-size:.84rem;font-weight:300;transition:background .2s;}
-.tc:hover{background:rgba(201,160,160,.28);}
+.clt{font-family:'Syne';font-size:clamp(4.5rem,12vw,10.5rem);font-weight:800;color:#fff;line-height:.88;letter-spacing:-.04em;}
+.clt span{color:var(--tl);display:block;}
+.crl{width:64px;height:2px;background:var(--tl);margin:22px auto;box-shadow:0 0 12px rgba(20,184,166,.5);}
+.csb{font-family:'Geist';font-size:.85rem;color:rgba(255,255,255,.38);letter-spacing:.18em;text-transform:uppercase;font-weight:300;}
+
+/* WHATSAPP CTA */
+.wa-cta{display:flex;align-items:center;gap:18px;background:rgba(37,211,102,.08);border:1px solid rgba(37,211,102,.22);border-radius:16px;padding:18px 24px;margin-top:22px;}
+.wa-icon{width:44px;height:44px;background:rgba(37,211,102,.15);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.wa-text{text-align:left;}
+.wa-label{font-family:'Syne';font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;color:rgba(37,211,102,.6);font-weight:600;margin-bottom:3px;}
+.wa-number{font-family:'Syne';font-size:1.25rem;font-weight:800;color:#fff;letter-spacing:.02em;}
+.wa-hint{font-size:.75rem;color:rgba(255,255,255,.28);font-weight:300;margin-top:2px;}
+
+.trow{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;}
+.tc{font-family:'Syne';padding:6px 18px;border-radius:24px;background:rgba(20,184,166,.1);border:1px solid rgba(20,184,166,.3);color:rgba(255,255,255,.75);font-size:.8rem;font-weight:600;transition:background .2s;cursor:pointer;}
+.tc:hover{background:rgba(20,184,166,.22);}
+.disc{font-family:'Geist';font-size:.68rem;color:rgba(255,255,255,.18);letter-spacing:.04em;margin-top:16px;font-style:italic;line-height:1.6;}
+
+/* SPEAKER CUE */
+.cue{position:absolute;bottom:12px;left:26px;font-size:.62rem;font-family:'Geist';color:rgba(255,255,255,.12);letter-spacing:.04em;max-width:700px;pointer-events:none;font-style:italic;}
+.lt1 .cue,.lt2 .cue,.lt3 .cue{color:rgba(11,26,24,.15);}
+
+/* TWO-COL */
+.awt{max-width:1020px;width:100%;display:grid;grid-template-columns:1.2fr 1fr;gap:56px;align-items:center;}
+
+/* STAT ROW */
+.stat-row{display:flex;gap:20px;margin-top:22px;}
+.stat-item{text-align:center;}
+.stat-big{font-family:'Syne';font-size:2.4rem;font-weight:800;color:var(--am);line-height:1;}
+.stat-lbl{font-size:.7rem;color:rgba(255,255,255,.32);font-weight:300;margin-top:3px;line-height:1.4;}
+.stat-div{width:1px;background:rgba(245,158,11,.15);align-self:stretch;}
 </style>
 </head>
 <body>
 
 <div id="prog"></div>
-<div id="counter">1 / 11</div>
+<div id="counter">1 / 13</div>
 <nav id="nav"></nav>
 <button class="abtn" id="bp"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
 <button class="abtn" id="bn"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
-<div id="kh">Space · Arrow Keys · Swipe to Navigate</div>
-
-
+<div id="kh">Space · Arrows · Swipe</div>
 
 <div id="deck">
 
-<!-- SLIDE 1: COVER -->
+<!-- S1 COVER -->
 <div class="slide dk1" id="s1">
-  <div class="wmk">RH</div>
-  <div style="position:absolute;width:600px;height:600px;top:-200px;right:-200px;border-radius:50%;background:radial-gradient(circle,rgba(201,160,160,.07) 0%,transparent 70%);pointer-events:none;"></div>
+  <div class="wmk">HB</div>
+  <div style="position:absolute;width:700px;height:700px;top:-260px;right:-200px;border-radius:50%;background:radial-gradient(circle,rgba(20,184,166,.055) 0%,transparent 70%);pointer-events:none;"></div>
   <div class="s1in">
-    <div class="lpill an sc d1">
-      <svg width="130" height="130" viewBox="0 0 90 90" fill="none" style="filter:drop-shadow(0 0 24px rgba(201,160,160,.7))">
-        <path d="M45 4 L78 18 L78 52 Q78 72 45 86 Q12 72 12 52 L12 18 Z" fill="rgba(201,160,160,.1)" stroke="rgba(201,160,160,.45)" stroke-width="1.5"/>
-        <ellipse cx="46" cy="54" rx="18" ry="13" fill="rgba(201,160,160,.22)" stroke="rgba(201,160,160,.7)" stroke-width="1.2"/>
-        <ellipse cx="30" cy="48" rx="13" ry="11" fill="rgba(201,160,160,.28)" stroke="rgba(201,160,160,.85)" stroke-width="1.5"/>
-        <path d="M19 42 L13 28 L22 38" fill="#c9a0a0" stroke="#c9a0a0" stroke-width="1"/>
-        <path d="M23 40 L19 33 L25 38" fill="rgba(201,160,160,.75)" stroke="rgba(201,160,160,.9)" stroke-width=".8"/>
-        <circle cx="27" cy="45" r="2.5" fill="#c9a0a0"/>
-        <circle cx="27" cy="45" r="1.2" fill="#1e1616"/>
-        <path d="M33 39 Q38 33 42 37 Q39 41 35 42 Z" fill="rgba(201,160,160,.5)" stroke="rgba(201,160,160,.8)" stroke-width="1"/>
-        <rect x="34" y="65" width="5" height="12" rx="2" fill="rgba(201,160,160,.6)" stroke="rgba(201,160,160,.8)" stroke-width="1"/>
-        <rect x="41" y="65" width="5" height="12" rx="2" fill="rgba(201,160,160,.6)" stroke="rgba(201,160,160,.8)" stroke-width="1"/>
-        <rect x="50" y="64" width="5" height="11" rx="2" fill="rgba(201,160,160,.5)" stroke="rgba(201,160,160,.7)" stroke-width="1"/>
-        <rect x="57" y="64" width="5" height="11" rx="2" fill="rgba(201,160,160,.5)" stroke="rgba(201,160,160,.7)" stroke-width="1"/>
-        <path d="M64 52 Q72 48 70 42" fill="none" stroke="rgba(201,160,160,.7)" stroke-width="2" stroke-linecap="round"/>
-        <path d="M17 51 Q20 55 25 53" fill="none" stroke="rgba(201,160,160,.6)" stroke-width="1.2" stroke-linecap="round"/>
+    <div class="cover-pill an sc d1">
+      <!-- LOGO -->
+      <svg width="68" height="68" viewBox="0 0 80 80" fill="none" style="filter:drop-shadow(0 0 18px rgba(20,184,166,.55))">
+        <line x1="14" y1="63" x2="14" y2="44" stroke="rgba(20,184,166,.9)" stroke-width="3.5" stroke-linecap="round"/>
+        <line x1="66" y1="63" x2="66" y2="44" stroke="rgba(20,184,166,.9)" stroke-width="3.5" stroke-linecap="round"/>
+        <path d="M14 44 Q14 15 40 15 Q66 15 66 44" stroke="rgba(20,184,166,.9)" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+        <line x1="27" y1="22" x2="27" y2="49" stroke="rgba(20,184,166,.28)" stroke-width="1.5"/>
+        <line x1="40" y1="15" x2="40" y2="49" stroke="rgba(20,184,166,.28)" stroke-width="1.5"/>
+        <line x1="53" y1="22" x2="53" y2="49" stroke="rgba(20,184,166,.28)" stroke-width="1.5"/>
+        <line x1="6" y1="49" x2="74" y2="49" stroke="rgba(20,184,166,.55)" stroke-width="3" stroke-linecap="round"/>
+        <path d="M6 49 L21 49 L26 37 L31 60 L36 42 L40 49 L74 49" stroke="#f59e0b" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
       </svg>
-      <div class="ltcol">
-        <span class="ley">COMM 200 · Group Project 1</span>
-        <div class="lnm"><span class="lgb">GB</span><span class="ldv"></span><span class="lrh">RHINOS</span></div>
-        <span class="ltg">Small Group Communication Training</span>
+      <div>
+        <div class="cover-event">HackPrinceton 2025 · Demo</div>
+        <div class="cover-logo-name"><span class="hb">Health</span><span class="br">Bridge</span></div>
+        <div class="cover-tag">WhatsApp Health Navigation</div>
       </div>
     </div>
-    <p class="csub an d3">Communication Training Session</p>
-    <div class="mrow">
-      <span class="mchip an d4">Preshak</span><span class="mchip an d4">Hrishav</span>
-      <span class="mchip an d5">Saksham</span><span class="mchip an d5">Regan</span>
-      <span class="mchip an d6">Kaya</span><span class="mchip an d6">Elias</span>
-      <span class="mchip an d7">Landon</span>
+    <p class="tagline an d3">Grounded · Multilingual · Action-Oriented</p>
+    <div class="chip-row">
+      <span class="mchip an d4">TypeScript + Node.js</span>
+      <span class="mchip an d4">WhatsApp · Baileys</span>
+      <span class="mchip an d5">Gemma · K2 Think V2</span>
+      <span class="mchip an d5">RxNorm · openFDA</span>
+      <span class="mchip an d6">Docker · HF Spaces</span>
     </div>
   </div>
+  <p class="disc" style="position:absolute;bottom:16px;left:50%;transform:translateX(-50%);white-space:nowrap;font-size:.65rem;color:rgba(255,255,255,.16);font-style:italic;">HealthBridge supports health decisions — it does not diagnose or replace a licensed provider.</p>
+  <p class="cue">Cue: "An engineered health navigation system — not a chatbot wrapper — where millions already are: WhatsApp."</p>
 </div>
 
-<!-- SLIDE 2: OVERVIEW -->
-<div class="slide lt1" id="s2">
+
+<!-- S2 PROBLEM -->
+<div class="slide dk2" id="s2">
+  <div class="wmk" style="font-size:26vw;">FEAR</div>
+  <div style="max-width:1040px;width:100%;display:grid;grid-template-columns:1.3fr 1fr;gap:60px;align-items:center;">
+    <div>
+      <span class="dk-tag an fl d1">The Problem</span>
+      <h2 class="dk-title an d2">US Healthcare<br><i>Is a Maze of Fear</i></h2>
+      <p class="an d3" style="font-size:.92rem;color:rgba(255,255,255,.38);font-weight:300;line-height:1.75;margin-top:10px;">Millions delay care — not from lack of access — but from fear, language barriers, and confusion.</p>
+      <ul class="glist an d4" style="margin-top:16px;">
+        <li class="gi"><span class="gi-arrow">↳</span><div><div class="gi-title">Afraid to call 911</div><div class="gi-desc">Cost anxiety or immigration fear — people wait dangerously long.</div></div></li>
+        <li class="gi"><span class="gi-arrow">↳</span><div><div class="gi-title">Unreadable paperwork</div><div class="gi-desc">Discharge papers, EOBs, and prior auth letters are inaccessible.</div></div></li>
+        <li class="gi"><span class="gi-arrow">↳</span><div><div class="gi-title">Medication confusion</div><div class="gi-desc">Taking prescriptions without knowing dangerous interactions.</div></div></li>
+        <li class="gi" style="border:none;"><span class="gi-arrow">↳</span><div><div class="gi-title">No provider direction</div><div class="gi-desc">Sliding-fee clinics exist nearby — nobody knows they're there.</div></div></li>
+      </ul>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:9px;">
+      <div class="statbox an fr d2"><div class="statnum">41%</div><div class="statdesc">of US adults delayed or skipped care due to cost last year</div></div>
+      <div class="statbox am an fr d3"><div class="statnum">67M+</div><div class="statdesc">people in the US speak a language other than English at home</div></div>
+      <div class="statbox rd an fr d4"><div class="statnum">80%</div><div class="statdesc">of medical errors linked to miscommunication</div></div>
+    </div>
+  </div>
+  <p class="cue">Cue: "The problem isn't coverage — it's navigation. People freeze when they don't understand the system."</p>
+</div>
+
+
+<!-- S3 WHO IT SERVES -->
+<div class="slide lt2" id="s3">
+  <div class="wmk-lt" style="font-size:22vw;">WHO</div>
+  <div style="max-width:1040px;width:100%;">
+    <div style="margin-bottom:22px;">
+      <span class="stag an fl d1">Audience</span>
+      <h2 class="stitle an d2">Built for Anyone<br><i>Navigating US Healthcare</i></h2>
+      <p class="bt an d3" style="max-width:600px;margin-top:6px;">Not just immigrants — anyone uncertain or overwhelmed. WhatsApp already has 2B+ users. We meet them there.</p>
+    </div>
+    <div class="skcs">
+      <div class="skc lt2 an d3"><div class="skc-icon">👨‍👩‍👧</div><h3>Middle-Income Families</h3><p>Too much for Medicaid, too little for surprise bills. Needs clear cost guidance.</p></div>
+      <div class="skc lt2 an d4"><div class="skc-icon">🌍</div><h3>Immigrants & Newcomers</h3><p>Multilingual triage, FQHC navigation, safe-access guidance regardless of status.</p></div>
+      <div class="skc lt2 an d4"><div class="skc-icon">🎓</div><h3>Students & Young Adults</h3><p>Newly off parents' insurance. Alone in medication and urgent care decisions.</p></div>
+      <div class="skc lt2 an d5"><div class="skc-icon">⚙️</div><h3>Gig & Hourly Workers</h3><p>No employer plan. Need fast triage before deciding if the ER is worth the bill.</p></div>
+      <div class="skc lt2 an d5"><div class="skc-icon">🧑‍⚕️</div><h3>Caregivers</h3><p>Managing medications and follow-ups for elderly parents with complex needs.</p></div>
+      <div class="skc lt2 an d6"><div class="skc-icon">🏙️</div><h3>Underserved Communities</h3><p>Low health literacy, low system trust. Need a non-judgmental guide in their language.</p></div>
+    </div>
+  </div>
+  <p class="cue">Cue: "140M Americans have no family doctor they can call at 11pm. We built HealthBridge for all of them."</p>
+</div>
+
+
+<!-- S4 PRODUCT OVERVIEW -->
+<div class="slide dk3" id="s4">
+  <div class="wmk" style="font-size:22vw;">FEAT</div>
+  <div class="skw">
+    <div class="skhd">
+      <span class="dk-tag an fl d1">Product Overview</span>
+      <h2 class="dk-title an d2">Six Features.<br><i>One WhatsApp Message.</i></h2>
+      <p class="dk-sub an d3">Every feature ends with a concrete action — not a wall of caveats.</p>
+    </div>
+    <div class="skcs">
+      <div class="skc dk3 an d3"><div class="skc-icon">🚨</div><h3>Emergency Override</h3><p>Deterministic regex in 10+ languages. 911 directive — no LLM latency in the critical path.</p></div>
+      <div class="skc dk3 an d4"><div class="skc-icon">💊</div><h3>Medication Intelligence</h3><p>Photo a pill bottle. Gemma extracts, FDA checks interactions, K2 explains clearly.</p></div>
+      <div class="skc dk3 an d4"><div class="skc-icon">🏥</div><h3>Symptom Triage</h3><p>6-step flow via MedlinePlus + K2 reasoning. ER, urgent care, or wait at home?</p></div>
+      <div class="skc dk3 an d5"><div class="skc-icon">📍</div><h3>Provider Finder</h3><p>ZIP-based HRSA/FQHC lookup. Nearest sliding-fee clinic in under 2 seconds.</p></div>
+      <div class="skc dk3 an d5"><div class="skc-icon">⏰</div><h3>Medication Reminders</h3><p>Schedule reminders, reply "taken" to confirm. For caregivers and chronic patients.</p></div>
+      <div class="skc dk3 an d6"><div class="skc-icon">🛡️</div><h3>Safe-Access Rights</h3><p>Patient rights and protections for those afraid to seek care due to cost or status.</p></div>
+    </div>
+  </div>
+  <p class="cue">Cue: "Every feature is an action, not information. We guide to the next step — we don't just answer."</p>
+</div>
+
+
+<!-- S5 DEMO FLOW -->
+<div class="slide lt3" id="s5">
+  <div class="wmk-lt" style="font-size:22vw;">FLOW</div>
+  <div style="max-width:1040px;width:100%;">
+    <span class="stag an fl d1">End-to-End Demo</span>
+    <h2 class="stitle an d2">A Real User Journey<br><i>in Three Messages</i></h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-top:18px;align-items:start;">
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div class="rowcard an d3"><div class="rcnum">01</div><div><div class="rctitle">Text Query</div><div class="rcdesc">"Dad takes metformin + lisinopril. New ibuprofen — okay?" → router classifies as medication intent.</div></div></div>
+        <div class="rowcard an d4"><div class="rcnum">02</div><div><div class="rctitle">Image Sent</div><div class="rcdesc">User photographs prescription. Gemma extracts drug, dose, frequency → matched to RxCUI via RxNorm.</div></div></div>
+        <div class="rowcard an d4"><div class="rcnum">03</div><div><div class="rctitle">FDA Check</div><div class="rcdesc">openFDA FAERS: NSAIDs + ACE inhibitors = renal risk. 234 adverse reports. Safety score: 🟡 YELLOW.</div></div></div>
+        <div class="rowcard an d5"><div class="rcnum">04</div><div><div class="rctitle">K2 Reasoning</div><div class="rcdesc">Chain-of-thought over grounded data + patient context → plain-language guidance + one clear action.</div></div></div>
+        <div class="rowcard an d5"><div class="rcnum">05</div><div><div class="rctitle">Clinic Found</div><div class="rcdesc">User sends ZIP. HRSA lookup returns nearest sliding-fee clinic with hours + phone in &lt;2 seconds.</div></div></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+
+      </div>
+    </div>
+  </div>
+  <p class="cue">Cue: "From confusion to clinic referral in one conversation. No apps, no logins, no dead ends."</p>
+</div>
+
+
+<!-- S6 ARCHITECTURE -->
+<div class="slide dk1" id="s6">
+  <div class="wmk" style="font-size:18vw;">ARCH</div>
+  <div style="max-width:1060px;width:100%;">
+    <span class="dk-tag an fl d1">System Architecture</span>
+    <h2 class="dk-title an d2">Five Layers of<br><i>Engineered Intelligence</i></h2>
+    <div class="an d3" style="display:flex;gap:0;align-items:stretch;height:210px;margin-top:18px;">
+      <div class="archlayer"><div class="archcard hl"><div class="archbadge">DETERMINISTIC</div><div class="archlabel">Layer 1</div><div class="archname">Safety + Routing</div><div class="archtech">Emergency keyword detection (10+ langs). Intent classification. No LLM in critical path.</div></div></div>
+      <div class="archconn"></div>
+      <div class="archlayer"><div class="archcard"><div class="archbadge">GEMMA 3 27B</div><div class="archlabel">Layer 2</div><div class="archname">Multimodal Extraction</div><div class="archtech">Image/PDF → structured JSON. Drug, dose, prescriber, doc type via OpenRouter.</div></div></div>
+      <div class="archconn"></div>
+      <div class="archlayer"><div class="archcard"><div class="archbadge">GROUNDED</div><div class="archlabel">Layer 3</div><div class="archname">Data Grounding</div><div class="archtech">RxNorm → RxCUI. openFDA labels. FAERS adverse signals. MedlinePlus. HRSA FQHC.</div></div></div>
+      <div class="archconn"></div>
+      <div class="archlayer"><div class="archcard am"><div class="archbadge am">K2 THINK V2</div><div class="archlabel">Layer 4</div><div class="archname">Deep Reasoning</div><div class="archtech">Chain-of-thought over grounded data. Follow-up context. Plain-language guidance.</div></div></div>
+      <div class="archconn"></div>
+      <div class="archlayer"><div class="archcard"><div class="archbadge">ACTION</div><div class="archlabel">Layer 5</div><div class="archname">Response + Action</div><div class="archtech">WA-formatted reply. Safety label. Clinic referral. Reminder scheduling.</div></div></div>
+    </div>
+    <div class="an d4" style="display:flex;gap:7px;flex-wrap:wrap;margin-top:14px;">
+      <span class="chip cteal">Fastify · TypeScript</span>
+      <span class="chip cteal">Baileys WA transport</span>
+      <span class="chip cteal">HMAC session security</span>
+      <span class="chip cteal">Ephemeral memory</span>
+      <span class="chip camber">Docker · HF Spaces</span>
+      <span class="chip cslate">Zero PHI persistence</span>
+    </div>
+  </div>
+  <p class="cue">Cue: "Emergency? Deterministic. Document? Gemma. Safety? FDA. Guidance? K2. Each layer has one job."</p>
+</div>
+
+
+<!-- S7 GEMMA LAYER -->
+<div class="slide lt2" id="s7">
+  <div class="wmk-lt" style="font-size:22vw;opacity:.024;">AI</div>
   <div class="awt">
     <div>
-      <span class="stag an fl d1">Why We Are Here</span>
-      <h2 class="stitle an d2">Most Groups Fail<br><i>Before They Start</i></h2>
-      <p class="bt an d3">Bad group meetings do not happen because people are bad. They happen because nobody was ever taught <strong>how to communicate</strong> inside a group. People talk over each other, shut down, or disengage and the whole group suffers for it.</p>
-      <p class="bt an d4" style="margin-top:10px;">Today we show you exactly what that looks like, break down the <strong>5 skills</strong> that fix it, then show the same group doing it right.</p>
-      <div class="srow an d5">
-        <div><div class="snum">5</div><div class="slbl">Core Skills</div></div>
-        <div><div class="snum">2</div><div class="slbl">Live Skits</div></div>
-        <div><div class="snum">7</div><div class="slbl">Members</div></div>
+      <span class="stag an fl d1">Layer 2 · Extraction</span>
+      <h2 class="stitle an d2">Gemma Multimodal<br><i>Extraction Layer</i></h2>
+      <div class="an d3" style="display:inline-flex;align-items:center;gap:8px;padding:5px 14px 5px 10px;border-radius:30px;background:rgba(13,122,112,.09);border:1px solid rgba(13,122,112,.2);margin-top:10px;">
+        <span style="width:6px;height:6px;border-radius:50%;background:var(--tl);display:block;animation:pulse-dot 2s infinite;flex-shrink:0;"></span>
+        <span style="font-family:'Syne';font-size:.7rem;color:var(--tl2);letter-spacing:.06em;font-weight:700;">google/gemma-3-27b-it via OpenRouter</span>
       </div>
-    </div>
-    <ul class="glist">
-      <li class="gi an fr d2"><span class="gnum">01</span><div class="gt"><strong>Watch the Bad Skit</strong><p>See all five skills break down in one real scenario. Spot exactly what is going wrong.</p></div></li>
-      <li class="gi an fr d3"><span class="gnum">02</span><div class="gt"><strong>Learn the 5 Skills</strong><p>Eye Contact, Listening, Body Language, Feedback, and Being Present with what goes wrong, how to fix it, and why it matters.</p></div></li>
-      <li class="gi an fr d4"><span class="gnum">03</span><div class="gt"><strong>Watch the Good Skit</strong><p>Same group, same situation, completely different outcome when the five skills are actually used.</p></div></li>
-    </ul>
-  </div>
-</div>
-
-<!-- SLIDE 3: BAD SKIT -->
-<div class="slide dk2" id="s3">
-  <div class="vsw">
-    <div class="an d1"><span class="vtag vbad">Before Training</span></div>
-    <h2 class="vtitle an d2">What <i>NOT</i> to Do</h2>
-    <div class="vlay">
-      <div class="an fl d3" id="bad-vid-wrap" style="position:relative;border-radius:18px;overflow:hidden;aspect-ratio:16/9;box-shadow:0 0 0 1px rgba(255,100,100,.3), 0 28px 70px rgba(0,0,0,.6), 0 0 50px rgba(255,80,80,.12);background:#0a0606;cursor:pointer;" onclick="togglePlay('badVid')">
-        <!-- glow overlay -->
-        <div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,80,80,.07) 0%,transparent 55%);pointer-events:none;z-index:1;"></div>
-        <!-- badge -->
-        <div style="position:absolute;top:12px;left:14px;z-index:5;background:rgba(180,40,40,.45);border:1px solid rgba(255,100,100,.45);color:#ffb8b8;font-size:.65rem;letter-spacing:.18em;text-transform:uppercase;padding:4px 13px;border-radius:20px;font-family:DM Sans;font-weight:400;backdrop-filter:blur(8px);">&#10005; Before Training</div>
-        <!-- fullscreen btn -->
-        <div onclick="event.stopPropagation();document.getElementById('badVid').requestFullscreen&&document.getElementById('badVid').requestFullscreen()" style="position:absolute;top:12px;right:14px;z-index:5;background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.7);font-size:.7rem;padding:4px 12px;border-radius:16px;font-family:DM Sans;cursor:pointer;backdrop-filter:blur(6px);">⛶ Fullscreen</div>
-        <!-- video -->
-        <video id="badVid" style="width:100%;height:100%;object-fit:cover;display:block;" controls preload="metadata"
-          onplay="document.getElementById('bad-overlay').style.opacity='0'"
-          onpause="document.getElementById('bad-overlay').style.opacity='1'"
-        >
-          <source src="https://res.cloudinary.com/dlicchpwp/video/upload/v1773299374/Bad_Example_tcc2i9.mov" type="video/mp4">
-        </video>
-        <!-- play overlay -->
-        <div id="bad-overlay" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;z-index:4;transition:opacity .35s;background:rgba(10,6,6,.35);pointer-events:none;">
-          <div style="width:68px;height:68px;border-radius:50%;background:rgba(201,160,160,.2);border:2px solid rgba(201,160,160,.6);display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);">
-            <div style="width:0;height:0;border-top:13px solid transparent;border-bottom:13px solid transparent;border-left:22px solid rgba(255,255,255,.85);margin-left:4px;"></div>
-          </div>
-          <span style="font-size:.75rem;color:rgba(255,255,255,.45);letter-spacing:.14em;text-transform:uppercase;font-family:DM Sans;">Click to Play</span>
-        </div>
-      </div>
-      <ul class="vpts">
-        <li class="vpt an d3"><span class="vd db"></span><span>Nobody is making eye contact. Everyone is looking at their phone while someone tries to speak.</span></li>
-        <li class="vpt an d4"><span class="vd db"></span><span>People keep interrupting and talking over each other. Nobody actually hears what is being said.</span></li>
-        <li class="vpt an d5"><span class="vd db"></span><span>Arms crossed, slouched, one member has their back half turned. Body language says leave me alone.</span></li>
-        <li class="vpt an d6"><span class="vd db"></span><span>Someone shares an idea and gets shot down immediately with zero acknowledgment.</span></li>
-        <li class="vpt an d7"><span class="vd db"></span><span>Half the group is mentally elsewhere. They miss questions and slow everything down.</span></li>
+      <p class="bt an d3" style="margin-top:10px;">Users send real health documents. Gemma converts visual data into structured JSON that downstream layers reason on — no manual re-typing.</p>
+      <ul class="glist-lt an d4" style="margin-top:14px;">
+        <li class="gi-lt"><span class="gi-num">Rx</span><div class="gi-t"><strong>Prescription Labels</strong><p>Drug name, dose, route, frequency, prescriber. Normalized to RxCUI downstream.</p></div></li>
+        <li class="gi-lt"><span class="gi-num">💊</span><div class="gi-t"><strong>Pill Bottle Photos</strong><p>OCR handles glare, rotation, partial occlusion via vision model.</p></div></li>
+        <li class="gi-lt"><span class="gi-num">📋</span><div class="gi-t"><strong>Discharge Papers</strong><p>Diagnosis codes, follow-up instructions, prescribed medications from hospital paperwork.</p></div></li>
+        <li class="gi-lt"><span class="gi-num">🔬</span><div class="gi-t"><strong>Lab Results & EOBs</strong><p>Numeric values + reference ranges; coverage decisions + appeal deadlines surfaced clearly.</p></div></li>
       </ul>
     </div>
-  </div>
-</div>
-
-<!-- SLIDE 4: EYE CONTACT -->
-<div class="slide lt2" id="s4">
-  <div class="skw">
-    <div class="skhd">
-      <div class="sknum an fl d1">01</div>
-      <div class="an d2"><h2 class="sktitle">Eye <i>Contact</i></h2><p class="sksub">Are you actually looking at the person speaking?</p></div>
-    </div>
-    <div class="skcs">
-      <div class="skc an d3"><div class="clbl wr"><span class="id ir"></span>What Goes Wrong</div><h3>Looking Everywhere But the Speaker</h3><p>Staring at your phone or notes while someone talks sends one message clearly: you do not care. It shuts people down fast and kills the group's energy.</p></div>
-      <div class="skc an d4"><div class="clbl fx"><span class="id ip"></span>How to Build It</div><h3>Look at People, Not Screens</h3><p>Turn your body toward whoever is speaking and hold natural eye contact. You do not have to stare. Just enough to show you are with them and tracking what they say.</p></div>
-      <div class="skc an d5"><div class="clbl wh"><span class="id ig"></span>Why It Matters</div><h3>It Builds Trust Instantly</h3><p>Eye contact is one of the fastest ways to signal respect. When members feel seen and acknowledged, they speak more freely and share better ideas with the group.</p></div>
-    </div>
-  </div>
-</div>
-
-<!-- SLIDE 5: LISTENING -->
-<div class="slide dk3" id="s5">
-  <div class="skw">
-    <div class="skhd">
-      <div class="sknum an fl d1">02</div>
-      <div class="an d2"><h2 class="sktitle"><i>Listening</i></h2><p class="sksub">Are you actually taking in what is being said?</p></div>
-    </div>
-    <div class="skcs">
-      <div class="skc an d3">
-        <div class="clbl wr"><span class="id ir"></span>What Goes Wrong</div>
-        <h3>Zoning Out or Getting Distracted</h3>
-        <ul class="blist">
-          <li>Not listening hurts group morale</li>
-          <li>Members miss important information</li>
-          <li>Zoning out discourages the speaker</li>
-          <li>Sends a sign that you do not care about the group</li>
-        </ul>
+    <div style="display:flex;flex-direction:column;gap:11px;">
+      <div class="hcard an fr d2">
+        <p style="font-family:'Syne';font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;color:var(--tl2);font-weight:700;margin-bottom:10px;">Output JSON Schema</p>
+        <pre style="font-family:monospace;font-size:.76rem;color:var(--tl2);line-height:1.85;background:rgba(13,122,112,.05);border-radius:7px;padding:11px;overflow:hidden;">{ drugName: string,
+  dose: string,
+  frequency: string,
+  prescriber: string,
+  docType: enum,
+  confidence: 0–1 }</pre>
       </div>
-      <div class="skc an d4">
-        <div class="clbl fx"><span class="id ip"></span>How to Build It</div>
-        <h3>Fully Engage With the Speaker</h3>
-        <ul class="blist">
-          <li>Do not talk out of turn</li>
-          <li>Let the speaker finish before you respond</li>
-          <li>Bounce ideas off what they actually said</li>
-          <li>Show respect by genuinely engaging</li>
-        </ul>
+      <div class="hcard an fr d3">
+        <p style="font-family:'Syne';font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;color:var(--tl2);font-weight:700;margin-bottom:7px;">PDF Text Path</p>
+        <p style="font-size:.84rem;color:var(--stone);font-weight:300;line-height:1.65;">Direct text extraction — no vision cost. Regex-assisted parsing. Falls back to Gemma vision if text layer is absent.</p>
       </div>
-      <div class="skc an d5">
-        <div class="clbl wh"><span class="id ig"></span>Why It Matters</div>
-        <h3>The Whole Group Works Better</h3>
-        <ul class="blist">
-          <li>Easier to give useful feedback to others</li>
-          <li>Members understand their roles clearly</li>
-          <li>Creates a positive work environment</li>
-          <li>Boosts overall group productivity</li>
-        </ul>
-      </div>
+
     </div>
   </div>
+  <p class="cue">Cue: "A user doesn't type drug names — they photograph the bottle. Gemma reads it. We normalize it. K2 reasons on it."</p>
 </div>
 
-<!-- SLIDE 6: BODY LANGUAGE -->
-<div class="slide lt3" id="s6">
-  <div class="skw">
-    <div class="skhd">
-      <div class="sknum an fl d1">03</div>
-      <div class="an d2"><h2 class="sktitle">Body <i>Language</i></h2><p class="sksub">What is your posture saying when your mouth is closed?</p></div>
-    </div>
-    <div class="skcs">
-      <div class="skc an d3"><div class="clbl wr"><span class="id ir"></span>What Goes Wrong</div><h3>Crossed Arms, Slouched Back</h3><p>Sitting back with arms crossed or turning away signals disinterest even without a single negative word. The room reads it immediately and energy drops fast.</p></div>
-      <div class="skc an d4"><div class="clbl fx"><span class="id ip"></span>How to Build It</div><h3>Open Up Your Posture</h3><p>Sit forward slightly. Keep arms uncrossed. Nod when you agree. Face whoever is speaking. Small physical adjustments signal engagement and make others feel safe to contribute.</p></div>
-      <div class="skc an d5"><div class="clbl wh"><span class="id ig"></span>Why It Matters</div><h3>Your Body Votes Too</h3><p>Most communication is nonverbal. If your body contradicts your words, people trust what your body is doing. Positive posture keeps group energy high and momentum going.</p></div>
-    </div>
-  </div>
-</div>
 
-<!-- SLIDE 7: FEEDBACK -->
-<div class="slide lt2" id="s7">
-  <div class="skw">
-    <div class="skhd">
-      <div class="sknum an fl d1">04</div>
-      <div class="an d2"><h2 class="sktitle">Giving <i>Feedback</i></h2><p class="sksub">Can you respond to ideas without shutting people down?</p></div>
-    </div>
-    <div class="skcs">
-      <div class="skc an d3"><div class="clbl wr"><span class="id ir"></span>What Goes Wrong</div><h3>Dismissing Ideas Immediately</h3><p>When someone shares and gets immediately shot down, they will not share again. Careless feedback kills creativity and turns the group into a place people want to leave.</p></div>
-      <div class="skc an d4"><div class="clbl fx"><span class="id ip"></span>How to Build It</div><h3>Acknowledge, Then Add</h3><p>Recognize what is useful about an idea first. Say what works, then offer your thoughts as a build, not an attack. Keep feedback about the idea, never the person who said it.</p></div>
-      <div class="skc an d5"><div class="clbl wh"><span class="id ig"></span>Why It Matters</div><h3>Good Feedback Grows the Group</h3><p>Constructive feedback is how good ideas become great ones. When people feel safe, the group keeps improving instead of stagnating around the first idea someone threw out.</p></div>
-    </div>
-  </div>
-</div>
-
-<!-- SLIDE 8: BEING PRESENT -->
+<!-- S8 FDA / RXNORM -->
 <div class="slide dk3" id="s8">
-  <div class="skw">
-    <div class="skhd">
-      <div class="sknum an fl d1">05</div>
-      <div class="an d2"><h2 class="sktitle">Being <i>Present</i></h2><p class="sksub">Is your mind actually in the room right now?</p></div>
+  <div class="wmk" style="font-size:22vw;">FDA</div>
+  <div style="max-width:1040px;width:100%;display:grid;grid-template-columns:1fr 1fr;gap:32px;">
+    <div>
+      <span class="dk-tag an fl d1">Layer 3 · Grounding</span>
+      <h2 class="dk-title an d2">FDA + RxNorm<br><i>Medication Intelligence</i></h2>
+      <div class="pblock an d3">
+        <p style="font-family:'Syne';font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--tl);font-weight:700;margin-bottom:10px;">RxNorm Drug Normalization</p>
+        <div class="pstep"><div class="pnum">1</div><div class="ptxt">Drug name → <code>rxnorm/rxcui</code> lookup. Handles brand names, generics, misspellings.</div></div>
+        <div class="pstep"><div class="pnum">2</div><div class="ptxt">Returns canonical <code>RxCUI</code> — stable key for all downstream FDA queries.</div></div>
+        <div class="pstep"><div class="pnum">3</div><div class="ptxt">openFDA label lookup → indications, contraindications, <strong>boxed warnings</strong>, pregnancy category.</div></div>
+        <div class="pstep"><div class="pnum">4</div><div class="ptxt">Each drug pair checked against FAERS adverse-event co-occurrence database.</div></div>
+        <div class="pstep"><div class="pnum">5</div><div class="ptxt">Death-report signal count extracted. High signal → elevated safety tier sent to K2.</div></div>
+      </div>
     </div>
-    <div class="skcs">
-      <div class="skc an d3"><div class="clbl wr"><span class="id ir"></span>What Goes Wrong</div><h3>Physically Here, Mentally Gone</h3><p>You can sit at the table and be completely checked out. Scrolling, daydreaming, or thinking about something else means you contribute nothing and just take up space.</p></div>
-      <div class="skc an d4"><div class="clbl fx"><span class="id ip"></span>How to Build It</div><h3>Commit to the Meeting Duration</h3><p>Before it starts, close other tabs, put the phone face down, and make a deliberate choice to be fully in the conversation. Give the group the same focus you want from them.</p></div>
-      <div class="skc an d5"><div class="clbl wh"><span class="id ig"></span>Why It Matters</div><h3>Presence Is a Form of Respect</h3><p>When everyone is truly present, meetings take half the time and produce twice the results. Presence is the foundation all other skills rest on. Without it, nothing else works.</p></div>
+    <div>
+      <div class="pblock an fr d3" style="margin-bottom:11px;">
+        <p style="font-family:'Syne';font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--am);font-weight:700;margin-bottom:10px;">⚠ FAERS Adverse Event Signals</p>
+        <div class="pstep"><div class="pnum" style="border-color:rgba(245,158,11,.35);color:var(--am);">A</div><div class="ptxt">Query: <code>/drug/event.json?search=patient.drug.medicinalproduct</code></div></div>
+        <div class="pstep"><div class="pnum" style="border-color:rgba(245,158,11,.35);color:var(--am);">B</div><div class="ptxt">Returns total adverse reports, serious outcomes, <strong>death count</strong> for the drug pair.</div></div>
+        <div class="pstep"><div class="pnum" style="border-color:rgba(245,158,11,.35);color:var(--am);">C</div><div class="ptxt">Signal thresholds map to safety tier → passed as context to K2.</div></div>
+      </div>
+      <div class="srow2 an fr d4">
+        <div class="sc2 scg">🟢 GREEN<br><span style="font-size:.68rem;font-weight:300;">No signals</span></div>
+        <div class="sc2 sca">🟡 YELLOW<br><span style="font-size:.68rem;font-weight:300;">Moderate risk</span></div>
+        <div class="sc2 scr">🔴 RED<br><span style="font-size:.68rem;font-weight:300;">Deaths reported</span></div>
+      </div>
     </div>
   </div>
+  <p class="cue">Cue: "Real FDA data, normalized, scored, grounded — before we touch the reasoning layer."</p>
 </div>
 
-<!-- SLIDE 9: GOOD SKIT -->
-<div class="slide good-bg" id="s9">
-  <div class="vsw">
-    <div class="an d1"><span class="vtag vgood">After Training</span></div>
-    <h2 class="vtitle gt an d2">Same Group, Different <i>Energy</i></h2>
-    <div class="vlay">
-      <div class="an fl d3" id="good-vid-wrap" style="position:relative;border-radius:18px;overflow:hidden;aspect-ratio:16/9;box-shadow:0 0 0 1px rgba(80,200,120,.3), 0 28px 70px rgba(0,0,0,.6), 0 0 50px rgba(80,200,120,.1);background:#060a06;cursor:pointer;" onclick="togglePlay('goodVid')">
-        <!-- glow overlay -->
-        <div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(80,200,120,.07) 0%,transparent 55%);pointer-events:none;z-index:1;"></div>
-        <!-- badge -->
-        <div style="position:absolute;top:12px;left:14px;z-index:5;background:rgba(30,120,60,.45);border:1px solid rgba(80,200,120,.45);color:#b8ffca;font-size:.65rem;letter-spacing:.18em;text-transform:uppercase;padding:4px 13px;border-radius:20px;font-family:DM Sans;font-weight:400;backdrop-filter:blur(8px);">&#10003; After Training</div>
-        <!-- fullscreen btn -->
-        <div onclick="event.stopPropagation();document.getElementById('goodVid').requestFullscreen&&document.getElementById('goodVid').requestFullscreen()" style="position:absolute;top:12px;right:14px;z-index:5;background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.7);font-size:.7rem;padding:4px 12px;border-radius:16px;font-family:DM Sans;cursor:pointer;backdrop-filter:blur(6px);">⛶ Fullscreen</div>
-        <!-- video -->
-        <video id="goodVid" style="width:100%;height:100%;object-fit:cover;display:block;" controls preload="metadata"
-          onplay="document.getElementById('good-overlay').style.opacity='0'"
-          onpause="document.getElementById('good-overlay').style.opacity='1'"
-        >
-          <source src="https://res.cloudinary.com/dlicchpwp/video/upload/v1773299678/GoodExample_gsfloq.mov" type="video/mp4">
-        </video>
-        <!-- play overlay -->
-        <div id="good-overlay" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;z-index:4;transition:opacity .35s;background:rgba(6,10,6,.35);pointer-events:none;">
-          <div style="width:68px;height:68px;border-radius:50%;background:rgba(80,200,120,.2);border:2px solid rgba(80,200,120,.6);display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);">
-            <div style="width:0;height:0;border-top:13px solid transparent;border-bottom:13px solid transparent;border-left:22px solid rgba(255,255,255,.85);margin-left:4px;"></div>
-          </div>
-          <span style="font-size:.75rem;color:rgba(255,255,255,.45);letter-spacing:.14em;text-transform:uppercase;font-family:DM Sans;">Click to Play</span>
-        </div>
+
+<!-- S9 K2 REASONING -->
+<div class="slide lt3" id="s9">
+  <div class="wmk-lt" style="font-size:30vw;opacity:.022;">K2</div>
+  <div class="awt">
+    <div>
+      <span class="stag an fl d1">Layer 4 · Reasoning</span>
+      <h2 class="stitle an d2">K2 Think V2<br><i>Deep Reasoning Layer</i></h2>
+      <p class="bt an d3">K2 receives a structured context packet — grounded FDA data, extracted document fields, conversation memory — and produces one clear next step.</p>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-top:14px;">
+        <div class="rowcard an d4"><div class="rcnum" style="font-size:1.2rem;">🧠</div><div><div class="rctitle">Chain-of-Thought over Grounded Data</div><div class="rcdesc">Receives safety score, drug label warnings, FAERS counts. Reasons step-by-step before output.</div></div></div>
+        <div class="rowcard an d4"><div class="rcnum" style="font-size:1.2rem;">💬</div><div><div class="rctitle">Conversation Memory</div><div class="rcdesc">Ephemeral context window maintains prior exchanges within a session.</div></div></div>
+        <div class="rowcard an d5"><div class="rcnum" style="font-size:1.2rem;">🎯</div><div><div class="rctitle">Action-Oriented Outputs</div><div class="rcdesc">Every response ends with a concrete action: "Ask your pharmacist", "Go to urgent care", "Call this clinic".</div></div></div>
+        <div class="rowcard an d5"><div class="rcnum" style="font-size:1.2rem;">🌐</div><div><div class="rctitle">Multilingual Output</div><div class="rcdesc">Responds in the user's detected language. Spanish, Mandarin, Hindi, Portuguese supported.</div></div></div>
       </div>
-      <ul class="vpts">
-        <li class="vpt an d3"><span class="vd dg"></span><span>Members make natural eye contact with whoever is speaking. The room feels connected and attentive.</span></li>
-        <li class="vpt an d4"><span class="vd dg"></span><span>People let each other finish before responding. Ideas land fully before the next person adds to them.</span></li>
-        <li class="vpt an d5"><span class="vd dg"></span><span>Everyone is leaning in and nodding. Body language says we are all in this together.</span></li>
-        <li class="vpt an d6"><span class="vd dg"></span><span>Feedback is constructive. Members build on each other's ideas instead of tearing them down.</span></li>
-        <li class="vpt an d7"><span class="vd dg"></span><span>Phones are away and attention is undivided. The group moves quickly because everyone is present.</span></li>
-      </ul>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <p style="font-family:'Syne';font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;color:var(--tl2);font-weight:700;" class="an fr d2">Reasoning Chain Example</p>
+      <div class="an fr d3" style="background:#fff;border:1px solid rgba(13,122,112,.18);border-radius:11px;padding:12px 14px;border-left:3px solid var(--tl);box-shadow:0 3px 12px rgba(13,122,112,.06);"><p style="font-family:'Syne';font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--tl2);margin-bottom:4px;font-weight:700;">01 — Context Loaded</p><p style="font-size:.82rem;color:var(--stone);font-weight:300;line-height:1.6;">Metformin + lisinopril + ibuprofen. Safety score: YELLOW. FAERS signal: 234 reports.</p></div>
+      <div class="an fr d3" style="background:#fff;border:1px solid var(--sand);border-radius:11px;padding:12px 14px;box-shadow:0 3px 12px rgba(13,122,112,.04);"><p style="font-family:'Syne';font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--stone);margin-bottom:4px;font-weight:700;">02 — Mechanism</p><p style="font-size:.82rem;color:var(--stone);font-weight:300;line-height:1.6;">NSAIDs reduce renal prostaglandins → impair ACE inhibitor efficacy → potential acute kidney injury.</p></div>
+      <div class="an fr d4" style="background:#fff;border:1px solid rgba(245,158,11,.22);border-radius:11px;padding:12px 14px;border-left:3px solid var(--am);box-shadow:0 3px 12px rgba(245,158,11,.05);"><p style="font-family:'Syne';font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--am);margin-bottom:4px;font-weight:700;">03 — Output</p><p style="font-size:.82rem;color:var(--stone);font-weight:300;line-height:1.6;">🟡 Plain explanation. "Call your pharmacist — ask about an NSAID alternative."</p></div>
     </div>
   </div>
+  <p class="cue">Cue: "K2 doesn't just answer — it reasons. Grounded in real FDA data, it thinks before it speaks."</p>
 </div>
 
-<!-- SLIDE 10: CONCLUSION -->
-<div class="slide lt1" id="s10">
-  <div style="max-width:1020px;width:100%;">
 
-    <!-- Header -->
-    <div style="margin-bottom:36px;">
-      <span class="stag an d1">Wrapping It Up</span>
-      <h2 class="stitle an d2" style="font-size:clamp(2.2rem,4.5vw,3.8rem);">What We <i>Learned Today</i></h2>
-    </div>
-
-    <!-- Two column layout: summary left, skills right -->
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start;">
-
-      <!-- Left: Big takeaway + skit summary -->
-      <div>
-        <div class="an d2" style="background:#fff;border:1px solid var(--sand);border-radius:18px;padding:28px 26px;box-shadow:0 4px 24px rgba(139,94,94,.1);position:relative;overflow:hidden;">
-          <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--rhino),var(--deep));"></div>
-          <p style="font-size:.7rem;letter-spacing:.25em;text-transform:uppercase;color:var(--rhino);font-weight:500;margin-bottom:12px;">The Big Takeaway</p>
-          <p style="font-family:'Fraunces';font-size:1.22rem;font-weight:700;color:var(--ink);line-height:1.45;font-style:italic;">"Good communication is not a personality trait. It is a set of skills anyone can learn and practise."</p>
-          <p style="font-size:.9rem;color:var(--stone);font-weight:300;line-height:1.7;margin-top:14px;">Every breakdown we showed in the bad skit came down to one or more of these five skills being ignored. Every improvement in the good skit came from actively using them. The difference was not talent. It was intention.</p>
-        </div>
-
-        <!-- Skit comparison boxes -->
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px;">
-          <div class="an d4" style="background:#fff;border:1px solid rgba(220,100,100,.25);border-radius:14px;padding:18px 16px;box-shadow:0 4px 16px rgba(200,80,80,.08);">
-            <p style="font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:#cc6666;font-weight:500;margin-bottom:10px;">&#10005; Bad Skit</p>
-            <ul style="list-style:none;font-size:.84rem;color:var(--stone);font-weight:300;line-height:1.7;">
-              <li style="padding:2px 0;">No eye contact made</li>
-              <li style="padding:2px 0;">Talking over each other</li>
-              <li style="padding:2px 0;">Closed off body language</li>
-              <li style="padding:2px 0;">Ideas shot down harshly</li>
-              <li style="padding:2px 0;">Minds were elsewhere</li>
-            </ul>
-          </div>
-          <div class="an d5" style="background:#fff;border:1px solid rgba(80,180,100,.25);border-radius:14px;padding:18px 16px;box-shadow:0 4px 16px rgba(80,180,100,.08);">
-            <p style="font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:#4aaa66;font-weight:500;margin-bottom:10px;">&#10003; Good Skit</p>
-            <ul style="list-style:none;font-size:.84rem;color:var(--stone);font-weight:300;line-height:1.7;">
-              <li style="padding:2px 0;">Natural eye contact held</li>
-              <li style="padding:2px 0;">Everyone got to finish</li>
-              <li style="padding:2px 0;">Open and engaged posture</li>
-              <li style="padding:2px 0;">Feedback built ideas up</li>
-              <li style="padding:2px 0;">Fully present the whole time</li>
-            </ul>
-          </div>
-        </div>
+<!-- S10 SAFETY & PRIVACY -->
+<div class="slide dk4" id="s10">
+  <div class="wmk" style="font-size:18vw;">SAFE</div>
+  <div style="max-width:1040px;width:100%;">
+    <span class="dk-tag an fl d1">Trust & Safety</span>
+    <h2 class="dk-title an d2">Safety, Privacy<br><i>& Guardrails</i></h2>
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:11px;margin-top:16px;">
+      <div class="an d3" style="background:rgba(255,255,255,.04);border:1px solid rgba(20,184,166,.18);border-radius:12px;padding:17px;border-left:3px solid var(--tl);">
+        <p style="font-family:'Syne';font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--tl);font-weight:700;margin-bottom:8px;">🔐 Session Security</p>
+        <ul class="blist"><li>Phone numbers HMAC-hashed. Never stored in plaintext.</li><li>Ephemeral in-memory sessions — no persistent PHI vault.</li><li>HTTPS enforced. Input sanitization on all inbound messages.</li></ul>
       </div>
-
-      <!-- Right: 5 skills summary cards -->
-      <div style="display:flex;flex-direction:column;gap:12px;">
-        <div class="an d3" style="background:#fff;border:1px solid var(--sand);border-radius:14px;padding:16px 18px;display:flex;align-items:center;gap:16px;box-shadow:0 4px 16px rgba(139,94,94,.08);transition:transform .25s;" onmouseover="this.style.transform='translateX(6px)'" onmouseout="this.style.transform='none'">
-          <div style="font-family:'Fraunces';font-size:1.7rem;color:var(--sand);font-weight:700;min-width:32px;line-height:1;">01</div>
-          <div>
-            <p style="font-size:.95rem;font-weight:500;color:var(--ink);">Eye Contact</p>
-            <p style="font-size:.82rem;color:var(--stone);font-weight:300;margin-top:2px;">Look at the person speaking. It signals respect and builds trust fast.</p>
-          </div>
-        </div>
-        <div class="an d4" style="background:#fff;border:1px solid var(--sand);border-radius:14px;padding:16px 18px;display:flex;align-items:center;gap:16px;box-shadow:0 4px 16px rgba(139,94,94,.08);transition:transform .25s;" onmouseover="this.style.transform='translateX(6px)'" onmouseout="this.style.transform='none'">
-          <div style="font-family:'Fraunces';font-size:1.7rem;color:var(--sand);font-weight:700;min-width:32px;line-height:1;">02</div>
-          <div>
-            <p style="font-size:.95rem;font-weight:500;color:var(--ink);">Listening</p>
-            <p style="font-size:.82rem;color:var(--stone);font-weight:300;margin-top:2px;">Actually take in what is said. Let people finish. Engage with their ideas.</p>
-          </div>
-        </div>
-        <div class="an d5" style="background:#fff;border:1px solid var(--sand);border-radius:14px;padding:16px 18px;display:flex;align-items:center;gap:16px;box-shadow:0 4px 16px rgba(139,94,94,.08);transition:transform .25s;" onmouseover="this.style.transform='translateX(6px)'" onmouseout="this.style.transform='none'">
-          <div style="font-family:'Fraunces';font-size:1.7rem;color:var(--sand);font-weight:700;min-width:32px;line-height:1;">03</div>
-          <div>
-            <p style="font-size:.95rem;font-weight:500;color:var(--ink);">Body Language</p>
-            <p style="font-size:.82rem;color:var(--stone);font-weight:300;margin-top:2px;">Open posture, lean in, nod. Your body communicates even when you are silent.</p>
-          </div>
-        </div>
-        <div class="an d6" style="background:#fff;border:1px solid var(--sand);border-radius:14px;padding:16px 18px;display:flex;align-items:center;gap:16px;box-shadow:0 4px 16px rgba(139,94,94,.08);transition:transform .25s;" onmouseover="this.style.transform='translateX(6px)'" onmouseout="this.style.transform='none'">
-          <div style="font-family:'Fraunces';font-size:1.7rem;color:var(--sand);font-weight:700;min-width:32px;line-height:1;">04</div>
-          <div>
-            <p style="font-size:.95rem;font-weight:500;color:var(--ink);">Giving Feedback</p>
-            <p style="font-size:.82rem;color:var(--stone);font-weight:300;margin-top:2px;">Acknowledge first, then add. Build ideas up rather than shutting them down.</p>
-          </div>
-        </div>
-        <div class="an d7" style="background:#fff;border:1px solid var(--sand);border-radius:14px;padding:16px 18px;display:flex;align-items:center;gap:16px;box-shadow:0 4px 16px rgba(139,94,94,.08);transition:transform .25s;" onmouseover="this.style.transform='translateX(6px)'" onmouseout="this.style.transform='none'">
-          <div style="font-family:'Fraunces';font-size:1.7rem;color:var(--sand);font-weight:700;min-width:32px;line-height:1;">05</div>
-          <div>
-            <p style="font-size:.95rem;font-weight:500;color:var(--ink);">Being Present</p>
-            <p style="font-size:.82rem;color:var(--stone);font-weight:300;margin-top:2px;">Phone down, mind in the room. Presence is the foundation every other skill sits on.</p>
-          </div>
-        </div>
+      <div class="an d3" style="background:rgba(255,255,255,.04);border:1px solid rgba(245,158,11,.18);border-radius:12px;padding:17px;border-left:3px solid var(--am);">
+        <p style="font-family:'Syne';font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--am);font-weight:700;margin-bottom:8px;">🚦 Rate Limiting & Abuse</p>
+        <ul class="blist"><li class="am">Per-session rate limiting on all expensive AI calls.</li><li class="am">Input length caps and content sanitization before any LLM pass.</li><li class="am">Emergency override bypasses rate limits — 911 always gets through.</li></ul>
       </div>
-
+      <div class="an d4" style="background:rgba(255,255,255,.04);border:1px solid rgba(248,113,113,.18);border-radius:12px;padding:17px;border-left:3px solid var(--rd);">
+        <p style="font-family:'Syne';font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--rd);font-weight:700;margin-bottom:8px;">🚨 Emergency Override</p>
+        <ul class="blist"><li class="rd">Deterministic regex — zero LLM latency in the crisis path.</li><li class="rd">Triggers: chest pain, stroke, suicidal ideation, severe bleeding + more.</li><li class="rd">10+ languages. 911 directive + crisis hotline returned in &lt;50ms.</li></ul>
+      </div>
+      <div class="an d4" style="background:rgba(255,255,255,.04);border:1px solid rgba(74,222,128,.18);border-radius:12px;padding:17px;border-left:3px solid var(--gr);">
+        <p style="font-family:'Syne';font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gr);font-weight:700;margin-bottom:8px;">⚖️ Clinical Guardrails</p>
+        <ul class="blist"><li>System prompt enforces "support, not diagnose" on every LLM call.</li><li>All medication guidance includes "confirm with pharmacist" directive.</li><li>Triage references MedlinePlus — a trusted government source.</li></ul>
+      </div>
     </div>
   </div>
+  <p class="cue">Cue: "Emergency detection is deterministic — it doesn't wait for an LLM."</p>
 </div>
 
-<!-- SLIDE 11: CLOSING -->
-<div class="slide dk4" id="s11">
-  <div style="font-family:'Bebas Neue';font-size:35vw;color:rgba(255,255,255,.04);position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;user-select:none;line-height:1;">GB</div>
+
+<!-- S11 INTEGRATIONS -->
+<div class="slide lt2" id="s11">
+  <div class="wmk-lt" style="font-size:20vw;">TECH</div>
+  <div style="max-width:1040px;width:100%;">
+    <span class="stag an fl d1">Infrastructure</span>
+    <h2 class="stitle an d2">Integrations, Deployment<br><i>& Operations</i></h2>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px;">
+      <div class="skc lt2 an d3"><p style="font-family:'Syne';font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;color:var(--tl2);font-weight:700;margin-bottom:6px;">Transport</p><h3>Baileys + WhatsApp</h3><p>Open-source WA multi-device library. QR pairing on <code style="font-family:monospace;font-size:.74rem;color:var(--tl2);">/qr</code>. Inbound router + media download.</p></div>
+      <div class="skc lt2 an d3"><p style="font-family:'Syne';font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;color:var(--tl2);font-weight:700;margin-bottom:6px;">AI Models</p><h3>OpenRouter Gateway</h3><p>Unified inference for Gemma 3 27B (vision) and K2 Think V2 (reasoning). Provider-agnostic.</p></div>
+      <div class="skc lt2 an d4"><p style="font-family:'Syne';font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;color:var(--tl2);font-weight:700;margin-bottom:6px;">Data Sources</p><h3>Federal Health APIs</h3><p>RxNorm, openFDA, FAERS, MedlinePlus, HRSA FQHC locator. All public — zero licensing cost.</p></div>
+      <div class="skc lt2 an d4"><p style="font-family:'Syne';font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;color:var(--tl2);font-weight:700;margin-bottom:6px;">Runtime</p><h3>Node.js + Fastify</h3><p>TypeScript throughout. Fastify high-throughput routing. Zod schema validation. Structured logging.</p></div>
+      <div class="skc lt2 an d5"><p style="font-family:'Syne';font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;color:var(--tl2);font-weight:700;margin-bottom:6px;">Deployment</p><h3>Docker + HF Spaces</h3><p>Single-image Docker build. Hugging Face Spaces hosting. One-command deploy.</p></div>
+      <div class="skc lt2 an d5">
+        <p style="font-family:'Syne';font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;color:var(--tl2);font-weight:700;margin-bottom:6px;">Key Routes</p>
+        <h3>API Endpoints</h3>
+        <ul class="blist" style="margin-top:6px;">
+          <li><code style="font-family:monospace;font-size:.74rem;color:var(--tl2);">GET /health</code> — WA connection status</li>
+          <li><code style="font-family:monospace;font-size:.74rem;color:var(--tl2);">GET /qr</code> — device pairing QR</li>
+          <li><code style="font-family:monospace;font-size:.74rem;color:var(--tl2);">POST /send</code> — outbound dispatch</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <p class="cue">Cue: "Every dependency is public or open-source. Zero licensing cost. One docker run and it's live on HF Spaces."</p>
+</div>
+
+
+<!-- S12 IMPACT & DIFFERENTIATION -->
+<div class="slide dk2" id="s12">
+  <div class="wmk" style="font-size:22vw;">WHY</div>
+  <div style="position:absolute;bottom:-120px;right:-90px;width:560px;height:560px;border-radius:50%;background:radial-gradient(circle,rgba(20,184,166,.05) 0%,transparent 70%);pointer-events:none;"></div>
+  <div style="max-width:1040px;width:100%;">
+    <span class="dk-tag an fl d1">Why HealthBridge Wins</span>
+    <h2 class="dk-title an d2" style="margin-bottom:14px;">Impact &<br><i>Differentiation</i></h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+      <div class="an d3">
+        <p style="font-family:'Syne';font-size:.62rem;letter-spacing:.22em;text-transform:uppercase;color:var(--tl);margin-bottom:8px;font-weight:700;">HealthBridge</p>
+        <div class="diffgood"><span style="color:var(--gr);flex-shrink:0;font-weight:700;">✓</span>Grounded in real FDA data — drug safety never hallucinated</div>
+        <div class="diffgood"><span style="color:var(--gr);flex-shrink:0;font-weight:700;">✓</span>Emergency override is deterministic — crisis speed, multilingual</div>
+        <div class="diffgood"><span style="color:var(--gr);flex-shrink:0;font-weight:700;">✓</span>Multimodal: reads your actual prescription, not what you type</div>
+        <div class="diffgood"><span style="color:var(--gr);flex-shrink:0;font-weight:700;">✓</span>Zero app download — meets users on WhatsApp they already use</div>
+        <div class="diffgood"><span style="color:var(--gr);flex-shrink:0;font-weight:700;">✓</span>ZIP → nearest clinic in &lt;2s — not a vague Google search</div>
+      </div>
+      <div class="an d3">
+        <p style="font-family:'Syne';font-size:.62rem;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.24);margin-bottom:8px;font-weight:700;">Generic Health AI</p>
+        <div class="diffbad"><span style="color:var(--rd);flex-shrink:0;font-weight:700;">✗</span>LLM-only: drug info hallucinated from training data</div>
+        <div class="diffbad"><span style="color:var(--rd);flex-shrink:0;font-weight:700;">✗</span>Emergency detection via prompt — latency risk in crisis</div>
+        <div class="diffbad"><span style="color:var(--rd);flex-shrink:0;font-weight:700;">✗</span>User must read and retype all information manually</div>
+        <div class="diffbad"><span style="color:var(--rd);flex-shrink:0;font-weight:700;">✗</span>App download, account creation, onboarding friction</div>
+        <div class="diffbad"><span style="color:var(--rd);flex-shrink:0;font-weight:700;">✗</span>Provider search is a link dump, not ZIP-personalized</div>
+      </div>
+    </div>
+    <div class="an d4" style="display:flex;gap:20px;align-items:center;margin-top:14px;background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.16);border-radius:11px;padding:13px 18px;flex-wrap:wrap;">
+      <div class="stat-item"><div class="stat-big">2B+</div><div class="stat-lbl">WhatsApp users</div></div>
+      <div class="stat-div"></div>
+      <div class="stat-item"><div class="stat-big">1,400+</div><div class="stat-lbl">FQHC sites via HRSA</div></div>
+      <div class="stat-div"></div>
+      <div class="stat-item"><div class="stat-big">$0</div><div class="stat-lbl">Licensing cost</div></div>
+      <div class="stat-div"></div>
+      <div class="stat-item"><div class="stat-big">10+</div><div class="stat-lbl">Emergency languages</div></div>
+      <div class="stat-div"></div>
+      <div class="stat-item"><div class="stat-big">5</div><div class="stat-lbl">Intelligence layers</div></div>
+    </div>
+  </div>
+  <p class="cue">Cue: "This isn't ChatGPT on WhatsApp. It's a layered clinical navigation system with real grounding and triage logic."</p>
+</div>
+
+
+<!-- S13 CLOSING / CTA -->
+<div class="slide dk1" id="s13">
+  <div class="wmk">HB</div>
+  <div style="position:absolute;width:800px;height:800px;top:-300px;left:-200px;border-radius:50%;background:radial-gradient(circle,rgba(20,184,166,.05) 0%,transparent 70%);pointer-events:none;"></div>
   <div class="clin">
-    <h2 class="clt an d1">Any<span>Questions?</span></h2>
-    <div class="crl an d2"></div>
-    <div class="rcg">
-      <div class="rcc an d3"><div class="rcn">01</div><div class="rcl">Eye Contact</div></div>
-      <div class="rcc an d4"><div class="rcn">02</div><div class="rcl">Listening</div></div>
-      <div class="rcc an d4"><div class="rcn">03</div><div class="rcl">Body Language</div></div>
-      <div class="rcc an d5"><div class="rcn">04</div><div class="rcl">Feedback</div></div>
-      <div class="rcc an d5"><div class="rcn">05</div><div class="rcl">Being Present</div></div>
+    <div class="an sc d1" style="margin-bottom:16px;">
+      <svg width="52" height="52" viewBox="0 0 80 80" fill="none" style="filter:drop-shadow(0 0 16px rgba(20,184,166,.5))">
+        <line x1="14" y1="63" x2="14" y2="44" stroke="rgba(20,184,166,.85)" stroke-width="3.5" stroke-linecap="round"/>
+        <line x1="66" y1="63" x2="66" y2="44" stroke="rgba(20,184,166,.85)" stroke-width="3.5" stroke-linecap="round"/>
+        <path d="M14 44 Q14 15 40 15 Q66 15 66 44" stroke="rgba(20,184,166,.85)" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+        <line x1="27" y1="22" x2="27" y2="49" stroke="rgba(20,184,166,.26)" stroke-width="1.5"/>
+        <line x1="40" y1="15" x2="40" y2="49" stroke="rgba(20,184,166,.26)" stroke-width="1.5"/>
+        <line x1="53" y1="22" x2="53" y2="49" stroke="rgba(20,184,166,.26)" stroke-width="1.5"/>
+        <line x1="6" y1="49" x2="74" y2="49" stroke="rgba(20,184,166,.5)" stroke-width="3" stroke-linecap="round"/>
+        <path d="M6 49 L21 49 L26 37 L31 60 L36 42 L40 49 L74 49" stroke="#f59e0b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      </svg>
     </div>
-    <p class="csb an d6">Presented by the GB Rhinos</p>
-    <div class="trow">
-      <span class="tc an d7">🦏 Preshak</span><span class="tc an d7">🦏 Hrishav</span>
-      <span class="tc an d7">🦏 Saksham</span><span class="tc an d8">🦏 Regan</span>
-      <span class="tc an d8">🦏 Kaya</span><span class="tc an d8">🦏 Elias</span>
-      <span class="tc an d8">🦏 Landon</span>
+    <h2 class="clt an d2">Health<span>Bridge</span></h2>
+    <div class="crl an d3"></div>
+    <p class="csb an d3">Grounded · Multilingual · Deterministic where it matters</p>
+
+    <!-- WHATSAPP CTA -->
+    <div class="wa-cta an d4">
+      <div class="wa-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="rgba(37,211,102,.9)"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      </div>
+      <div class="wa-text">
+        <div class="wa-label">Try the Live Demo</div>
+        <div class="wa-number">+1 (920) 489-5575</div>
+        <div class="wa-hint">Open WhatsApp and send your first message to HealthBridge</div>
+      </div>
     </div>
+
+    <div class="trow an d5">
+      <span class="tc">Try the Live Demo</span>
+      <span class="tc">View GitHub Repo</span>
+    </div>
+    <p class="disc an d6">HealthBridge is a decision-support tool. It does not diagnose, prescribe, or replace licensed medical providers.</p>
   </div>
+  <p class="cue">Cue: "Message +1 (920) 489-5575 on WhatsApp. Ask about a medication. See why this is engineered navigation — not a chatbot."</p>
 </div>
 
 </div>
@@ -554,12 +677,11 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'DM Sans',sans-seri
 const slides = Array.from(document.querySelectorAll('#deck .slide'));
 const navEl  = document.getElementById('nav');
 const prog   = document.getElementById('prog');
-const counter= document.getElementById('counter');
+const ctr    = document.getElementById('counter');
 const kh     = document.getElementById('kh');
 const total  = slides.length;
 let cur = 0, busy = false;
 
-// Build nav dots
 slides.forEach((_,i) => {
   const d = document.createElement('button');
   d.className = 'nd';
@@ -576,91 +698,65 @@ function fireAnims(sl) {
   }));
 }
 
+function isLight(sl) {
+  return sl.classList.contains('lt1') || sl.classList.contains('lt2') || sl.classList.contains('lt3');
+}
+
 function go(n, dir) {
   if (busy || n === cur || n < 0 || n >= total) return;
   busy = true;
-  const d = (dir !== undefined) ? dir : (n > cur ? 1 : -1);
-  const oldSlide  = slides[cur];
-  const nextSlide = slides[n];
-
-  oldSlide.classList.add(d > 0 ? 'xtl' : 'xtr');
-  nextSlide.style.opacity = '1';
-  nextSlide.classList.add(d > 0 ? 'efr' : 'efl');
-  nextSlide.classList.add('active');
-  fireAnims(nextSlide);
-
-  // Pause any playing videos
-  ['badVid','goodVid'].forEach(id => {
-    const v = document.getElementById(id);
-    if (v && !v.paused) v.pause();
-  });
-
+  const d = dir !== undefined ? dir : (n > cur ? 1 : -1);
+  const old = slides[cur], next = slides[n];
+  old.classList.add(d > 0 ? 'xtl' : 'xtr');
+  next.style.opacity = '1';
+  next.classList.add(d > 0 ? 'efr' : 'efl');
+  next.classList.add('active');
+  fireAnims(next);
   setTimeout(() => {
-    oldSlide.classList.remove('active','xtl','xtr');
-    oldSlide.style.opacity = '';
-    nextSlide.classList.remove('efr','efl');
-    nextSlide.style.opacity = '';
-    cur = n;
-    ui();
-    busy = false;
-  }, 560);
+    old.classList.remove('active','xtl','xtr');
+    old.style.opacity = '';
+    next.classList.remove('efr','efl');
+    next.style.opacity = '';
+    cur = n; ui(); busy = false;
+  }, 540);
 }
 
 function ui() {
   dots.forEach((d,i) => d.classList.toggle('on', i === cur));
-  prog.style.width = ((cur+1) / total * 100) + '%';
-  counter.textContent = (cur+1) + ' / ' + total;
-  const isLight = slides[cur].classList.contains('lt1')
-               || slides[cur].classList.contains('lt2')
-               || slides[cur].classList.contains('lt3');
-  counter.classList.toggle('lgt', isLight);
-  const strokeCol = isLight ? 'rgba(30,22,22,.45)' : 'rgba(255,255,255,.65)';
-  document.querySelectorAll('.abtn svg').forEach(s => s.style.stroke = strokeCol);
-  const btnBg = isLight ? 'rgba(139,94,94,.1)' : 'rgba(201,160,160,.15)';
-  const btnBd = isLight ? 'rgba(139,94,94,.25)' : 'rgba(201,160,160,.28)';
-  document.querySelectorAll('.abtn').forEach(b => {
-    b.style.background    = btnBg;
-    b.style.borderColor   = btnBd;
-  });
-  kh.style.color = isLight ? 'rgba(30,22,22,.18)' : 'rgba(255,255,255,.22)';
+  prog.style.width = ((cur+1)/total*100) + '%';
+  ctr.textContent = (cur+1) + ' / ' + total;
+  const lt = isLight(slides[cur]);
+  ctr.classList.toggle('lgt', lt);
+  const sc = lt ? 'rgba(11,26,24,.45)' : 'rgba(255,255,255,.6)';
+  document.querySelectorAll('.abtn svg').forEach(s => s.style.stroke = sc);
+  const bg = lt ? 'rgba(13,122,112,.09)' : 'rgba(20,184,166,.1)';
+  const bd = lt ? 'rgba(13,122,112,.22)' : 'rgba(20,184,166,.24)';
+  document.querySelectorAll('.abtn').forEach(b => { b.style.background = bg; b.style.borderColor = bd; });
+  kh.style.color = lt ? 'rgba(11,26,24,.15)' : 'rgba(255,255,255,.18)';
 }
 
-// Init first slide
 slides[0].classList.add('active');
 fireAnims(slides[0]);
 ui();
 
-// Keyboard navigation — preventDefault first to stop browser scroll
 document.addEventListener('keydown', e => {
-  if (e.key === ' ' || e.key === 'ArrowDown' || e.key === 'ArrowRight' || e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
-    e.preventDefault();
-    e.stopPropagation();
-  }
-  if (e.key === ' ' || e.key === 'ArrowDown' || e.key === 'ArrowRight') { go(cur+1,  1); }
-  if (e.key === 'ArrowUp' || e.key === 'ArrowLeft')                     { go(cur-1, -1); }
-}, { capture: true });
+  if ([' ','ArrowDown','ArrowRight','ArrowUp','ArrowLeft'].includes(e.key)) { e.preventDefault(); e.stopPropagation(); }
+  if (e.key === ' ' || e.key === 'ArrowDown' || e.key === 'ArrowRight') go(cur+1, 1);
+  if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') go(cur-1, -1);
+  if (e.key === 'Home') go(0,-1);
+  if (e.key === 'End') go(total-1,1);
+}, {capture:true});
 
-// Arrow button clicks
-document.getElementById('bn').onclick = () => go(cur+1,  1);
+document.getElementById('bn').onclick = () => go(cur+1, 1);
 document.getElementById('bp').onclick = () => go(cur-1, -1);
 
-// Touch swipe
-let touchStartX = 0;
-document.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, {passive:true});
-document.addEventListener('touchend',   e => {
-  const dx = e.changedTouches[0].clientX - touchStartX;
-  if (Math.abs(dx) > 48) { dx < 0 ? go(cur+1,1) : go(cur-1,-1); }
+let tx = 0;
+document.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, {passive:true});
+document.addEventListener('touchend', e => {
+  const dx = e.changedTouches[0].clientX - tx;
+  if (Math.abs(dx) > 48) dx < 0 ? go(cur+1,1) : go(cur-1,-1);
 });
-
-// Hide key hint after 5s
-setTimeout(() => { kh.style.opacity = '0'; }, 5000);
-
-// Video toggle helper
-function togglePlay(id) {
-  const v = document.getElementById(id);
-  if (!v) return;
-  v.paused ? v.play() : v.pause();
-}
+setTimeout(() => { kh.style.opacity = '0'; }, 4000);
 </script>
 </body>
 </html>
